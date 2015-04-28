@@ -6,19 +6,29 @@ compileUnit
 	: startTransaction transaction*
 	;
 
-startTransaction : typeIdentifier line+ endTransaction ;
+startTransaction 
+	: typeIdentifier line+ endTransaction 
+	;
 
-typeIdentifier : TYPE_MARKER (TYPE_START type | account) LINE_BREAK;
-endTransaction : END_TRANSACTION (LINE_BREAK | EOF) ;
+typeIdentifier 
+	: TYPE_MARKER (TYPE_START type | account) LINE_BREAK
+	;
 
-type : TYPE ;
-account : ACCOUNT ;
+endTransaction 
+	: END_TRANSACTION (LINE_BREAK | EOF) 
+	;
 
 transaction 
 	: line+ endTransaction
 	;
 
-line : code literal_string LINE_BREAK ;
+line 
+	: code literal_string LINE_BREAK 
+	;
+
+type : TYPE ;
+
+account : ACCOUNT ;
 
 code : LINE_START ;
 
