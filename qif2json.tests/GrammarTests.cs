@@ -29,6 +29,19 @@ D03/04/10
 T-20.28
 PYOUR LOCAL SUPERMARKET
 ^")]
+        [InlineData(@"!Type:Bank
+D03/03/10
+T-379.00
+PCITY OF SPRINGFIELD
+^
+D03/04/10
+T-20.28
+PYOUR LOCAL SUPERMARKET
+AMoscow
+ALeninsky str
+A
+A
+^")]
         [InlineData(@"!Account
 D03/03/10
 T-379.00

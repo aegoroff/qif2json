@@ -56,4 +56,5 @@ LINE_BREAK : [\r]? [\n] ;
 
 mode STR;
 
-TEXT : ~[\r\n]* -> popMode ;
+LITERAL : TEXT LINE_BREAK -> popMode ;
+fragment TEXT : ~[\r\n]*  ;

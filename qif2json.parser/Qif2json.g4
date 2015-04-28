@@ -23,7 +23,7 @@ transaction
 	;
 
 line 
-	: code literal_string LINE_BREAK 
+	: code literal_string 
 	;
 
 type : TYPE ;
@@ -32,4 +32,4 @@ account : ACCOUNT ;
 
 code : LINE_START ;
 
-literal_string : TEXT ;
+literal_string : LITERAL ;
