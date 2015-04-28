@@ -21,7 +21,7 @@ TYPE : 'Cash'
 
 LINE_START : CODE  -> pushMode(STR) ;
 
-CODE : 'D'
+fragment CODE : 'D'
 	 | 'T'
 	 | 'M'
 	 | 'C'
