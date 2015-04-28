@@ -1,8 +1,11 @@
 lexer grammar Qif2jsonLexer;
 
-TYPE_START : '!Type:' ;
+TYPE_START : 'Type:' ;
+ACCOUNT : 'Account' ;
 
-TRAN_START : '^' ;
+TYPE_MARKER : '!' ;
+
+END_TRANSACTION : '^' ;
 
 TYPE : 'Cash'
 	 | 'Bank'

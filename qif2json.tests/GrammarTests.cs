@@ -18,7 +18,8 @@ namespace qif2json.tests
         [InlineData(@"!Type:Bank
 D03/03/10
 T-379.00
-PCITY OF SPRINGFIELD")]
+PCITY OF SPRINGFIELD
+^")]
         [InlineData(@"!Type:Bank
 D03/03/10
 T-379.00
@@ -26,7 +27,8 @@ PCITY OF SPRINGFIELD
 ^
 D03/04/10
 T-20.28
-PYOUR LOCAL SUPERMARKET")]
+PYOUR LOCAL SUPERMARKET
+^")]
         public void Tests(string qif)
         {
             var parser = new QifParser(output.WriteLine);
