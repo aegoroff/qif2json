@@ -7,10 +7,10 @@ compileUnit
 	;
 
 startTransaction 
-	: typeIdentifier line+ endTransaction 
+	: header line+ endTransaction 
 	;
 
-typeIdentifier 
+header 
 	: TYPE_MARKER (TYPE_START type | account) LINE_BREAK
 	;
 
@@ -32,4 +32,4 @@ account : ACCOUNT ;
 
 code : LINE_START ;
 
-literal_string : TEXT;
+literal_string : TEXT ;
