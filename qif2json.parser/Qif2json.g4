@@ -3,8 +3,10 @@ parser grammar Qif2json;
 options { tokenVocab=Qif2jsonLexer; }
 
 compileUnit
-	: typeIdentifier line+ endTransaction transactionList*
+	: startTransaction transaction*
 	;
+
+startTransaction : typeIdentifier line+ endTransaction ;
 
 typeIdentifier : TYPE_MARKER (TYPE_START type | account) LINE_BREAK;
 endTransaction : END_TRANSACTION (LINE_BREAK | EOF) ;
@@ -12,8 +14,7 @@ endTransaction : END_TRANSACTION (LINE_BREAK | EOF) ;
 type : TYPE ;
 account : ACCOUNT ;
 
-
-transactionList 
+transaction 
 	: line+ endTransaction
 	;
 
