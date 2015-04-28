@@ -29,6 +29,11 @@ D03/04/10
 T-20.28
 PYOUR LOCAL SUPERMARKET
 ^")]
+        [InlineData(@"!Account
+D03/03/10
+T-379.00
+PCITY OF SPRINGFIELD
+^")]
         public void Tests(string qif)
         {
             var parser = new QifParser(output.WriteLine);
