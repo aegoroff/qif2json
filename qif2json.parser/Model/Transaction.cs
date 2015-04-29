@@ -2,7 +2,7 @@
 
 namespace qif2json.parser.Model
 {
-    internal struct Transaction
+    public struct Transaction
     {
         private readonly List<Line> lines;
 
@@ -11,7 +11,7 @@ namespace qif2json.parser.Model
             this.lines = list;
         }
 
-        internal IEnumerable<Line> Lines
+        public IEnumerable<Line> Lines
         {
             get { return this.lines; }
         }

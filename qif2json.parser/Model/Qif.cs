@@ -13,7 +13,7 @@ namespace qif2json.parser.Model
 
         public string Type { get; set; }
 
-        internal IEnumerable<Transaction> Transactions
+        public IEnumerable<Transaction> Transactions
         {
             get { return this.transactions; }
         }
