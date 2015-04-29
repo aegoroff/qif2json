@@ -41,7 +41,9 @@ AMoscow
 ALeninsky str
 A
 A
-^", "Bank")]
+^
+
+", "Bank")]
         [InlineData(@"!Account
 D03/03/10
 T-379.00
