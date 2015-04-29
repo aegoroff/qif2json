@@ -14,6 +14,8 @@ namespace qif2json.parser
 
         public int NumberOfSyntaxErrors { get; private set; }
 
+        public string FileType { get; internal set; }
+
         public string Compile(string qif)
         {
             ICharStream inputStream = new AntlrInputStream(qif);
@@ -39,6 +41,7 @@ namespace qif2json.parser
             var listener = new Qif2JsonListener();
             parser.AddParseListener(listener);
             parser.compileUnit();
+            FileType = listener.Type;
             return string.Empty;
         }
     }
