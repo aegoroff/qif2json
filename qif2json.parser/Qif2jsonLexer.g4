@@ -7,16 +7,16 @@ TYPE_MARKER : '!' ;
 
 END_TRANSACTION : '^' ;
 
-TYPE : 'Cash'
-	 | 'Bank'
-	 | 'CCard'
-	 | 'Invst'
-	 | 'Oth A'
-	 | 'Oth L'
+TYPE : 'Cash' // Cash account transactions
+	 | 'Bank' // Bank account transactions
+	 | 'CCard' // Credit card account transactions
+	 | 'Invst' // Investment account transactions
+	 | 'Oth A' // Asset account transactions
+	 | 'Oth L' // Liability account transactions
 	 | 'Invoice'
-	 | 'Cat'
-	 | 'Class'
-	 | 'Memorized'
+	 | 'Cat' // Category list
+	 | 'Class' // Class list
+	 | 'Memorized' // Memorized transaction list
 	 ;
 
 LINE_START : CODE  -> pushMode(STR) ;
