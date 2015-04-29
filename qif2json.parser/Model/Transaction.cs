@@ -11,6 +11,11 @@ namespace qif2json.parser.Model
             this.lines = list;
         }
 
+        internal static Transaction Create()
+        {
+            return new Transaction(new List<Line>());
+        }
+
         public IEnumerable<Line> Lines
         {
             get { return this.lines; }

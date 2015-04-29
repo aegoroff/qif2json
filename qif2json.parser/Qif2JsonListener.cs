@@ -27,13 +27,13 @@ namespace qif2json.parser
 
         public override void ExitHeader(Qif2json.HeaderContext context)
         {
-            this.currentTran = new Transaction(new List<Line>());
+            this.currentTran = Transaction.Create();
         }
 
         public override void EnterEndTransaction(Qif2json.EndTransactionContext context)
         {
             this.JsonInstance.Add(this.currentTran);
-            this.currentTran = new Transaction(new List<Line>());
+            this.currentTran = Transaction.Create();
         }
 
         public override void EnterLine(Qif2json.LineContext context)
