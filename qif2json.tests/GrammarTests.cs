@@ -52,7 +52,10 @@ PCITY OF SPRINGFIELD
             var parser = new QifParser(output.WriteLine);
             parser.Compile(qif);
             Assert.Equal(0, parser.NumberOfSyntaxErrors);
-            Assert.Equal(type, parser.FileType);
+            Assert.Equal(type, parser.Qif.Type);
+            var json = parser.ToJson(true);
+            output.WriteLine(json);
+            Assert.NotEmpty(json);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
+using Newtonsoft.Json;
+using qif2json.parser.Model;
 
 namespace qif2json.parser
 {
@@ -14,9 +16,9 @@ namespace qif2json.parser
 
         public int NumberOfSyntaxErrors { get; private set; }
 
-        public string FileType { get; internal set; }
+        public Qif Qif { get; internal set; }
 
-        public string Compile(string qif)
+        public void Compile(string qif)
         {
             ICharStream inputStream = new AntlrInputStream(qif);
             var lexer = new Qif2jsonLexer(inputStream);
@@ -35,14 +37,18 @@ namespace qif2json.parser
             NumberOfSyntaxErrors = parser.NumberOfSyntaxErrors;
             if (NumberOfSyntaxErrors > 0)
             {
-                return null;
+                return;
             }
 
             var listener = new Qif2JsonListener();
             parser.AddParseListener(listener);
             parser.compileUnit();
-            FileType = listener.Type;
-            return string.Empty;
+            Qif = listener.JsonInstance;
+        }
+
+        public string ToJson(bool idented = false)
+        {
+            return JsonConvert.SerializeObject(Qif, idented ? Formatting.Indented : Formatting.None);
         }
     }
 }
