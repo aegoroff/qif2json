@@ -48,7 +48,7 @@
     <Compile Include="ErrorListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QifParser.cs" />
-    <Compile Include="Qif2jsonVisitor.cs" />
+    <Compile Include="Qif2JsonListener.cs" />
     <Compile Include="TreeListener.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,11 +56,13 @@
     <Antlr4 Include="Qif2json.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>qif2json.parser</CustomToolNamespace>
-      <Listener>False</Listener>
+      <Listener>True</Listener>
+      <Visitor>False</Visitor>
     </Antlr4>
     <Antlr4 Include="Qif2jsonLexer.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>qif2json.parser</CustomToolNamespace>
+      <Visitor>False</Visitor>
     </Antlr4>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

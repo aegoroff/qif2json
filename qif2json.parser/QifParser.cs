@@ -36,9 +36,9 @@ namespace qif2json.parser
                 return null;
             }
 
-            var tree = parser.compileUnit();
-            var grokVisitor = new Qif2JsonVisitor();
-            grokVisitor.Visit(tree);
+            var listener = new Qif2JsonListener();
+            parser.AddParseListener(listener);
+            parser.compileUnit();
             return string.Empty;
         }
     }
