@@ -4,6 +4,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using Antlr4.Runtime;
 using Newtonsoft.Json;
 using qif2json.parser.Model;
@@ -42,9 +43,10 @@ namespace qif2json.parser
             {
                 return;
             }
+            var encoding = DetectEncoding(inputFile) ?? Encoding.UTF8;
             var input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read);
             var outputStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Read);
-            var outputWriter = new StreamWriter(outputStream);
+            var outputWriter = new StreamWriter(outputStream, encoding);
             var started = false;
             using (outputStream)
             {
@@ -52,24 +54,38 @@ namespace qif2json.parser
                 {
                     using (input)
                     {
-                        ICharStream inputStream = new AntlrInputStream(input);
-                        this.CompileStream(inputStream,
-                            (o, args) => outputWriter.Write(CreateHead(args.Type)),
-                            (o, args) =>
-                            {
-                                if (started)
+                        var sr = new StreamReader(input, encoding);
+                        using (sr)
+                        {
+                            ICharStream inputStream = new AntlrInputStream(sr);
+                            this.CompileStream(inputStream,
+                                (o, args) => outputWriter.Write(CreateHead(args.Type)),
+                                (o, args) =>
                                 {
-                                    // write comma only after first transaction
-                                    outputWriter.Write(",");
-                                }
-                                started = true;
-                                outputWriter.Write(this.SerializeObject(args.Transaction));
-                            });
+                                    if (started)
+                                    {
+                                        // write comma only after first transaction
+                                        outputWriter.Write(",");
+                                    }
+                                    started = true;
+                                    outputWriter.Write(this.SerializeObject(args.Transaction));
+                                });
+                        }
                     }
                     outputWriter.Write("]}");
                     outputWriter.Flush();
                     outputStream.Flush();
                 }
+            }
+        }
+
+        private static Encoding DetectEncoding(string path)
+        {
+            var detector = new FileCharsetDetector();
+            var input = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using (input)
+            {
+                return detector.Detect(input);
             }
         }
 
