@@ -5,7 +5,7 @@
 using System;
 using Antlr4.Runtime;
 
-namespace qif2json.parser
+namespace qif2json.parser.Debug
 {
     public class ErrorListener : IAntlrErrorListener<IToken>
     {

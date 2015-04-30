@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileCharsetDetector.cs" />
-    <Compile Include="ErrorListener.cs" />
+    <Compile Include="Debug\ErrorListener.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Model\Line.cs" />
     <Compile Include="Model\Qif.cs" />
@@ -64,7 +64,7 @@
     <Compile Include="QifParser.cs" />
     <Compile Include="Qif2JsonListener.cs" />
     <Compile Include="Model\TransactionDetectedEventArgs.cs" />
-    <Compile Include="TreeListener.cs" />
+    <Compile Include="Debug\TreeListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

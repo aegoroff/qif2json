@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 
-namespace qif2json.parser
+namespace qif2json.parser.Debug
 {
     public class TreeListener : IParseTreeListener
     {
