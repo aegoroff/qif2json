@@ -1,7 +1,6 @@
 ﻿using System;
-using qif2json.parser.Model;
 
-namespace qif2json.parser
+namespace qif2json.parser.Model
 {
     /// <summary>
     /// Transaction detection results
@@ -22,28 +21,6 @@ namespace qif2json.parser
         public Transaction Transaction
         {
             get { return this.transaction; }
-        }
-    }
-    
-    /// <summary>
-    /// File type detection results
-    /// </summary>
-    public sealed class TypeDetectedEventArgs : EventArgs
-    {
-        private readonly string type;
-
-        /// <summary>
-        /// Initializes new args instance
-        /// </summary>
-        /// <param name="type">Encoding detected</param>
-        public TypeDetectedEventArgs(string type)
-        {
-            this.type = type;
-        }
-
-        public string Type
-        {
-            get { return this.type; }
         }
     }
 }

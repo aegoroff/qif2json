@@ -53,10 +53,11 @@
     <Compile Include="Model\Line.cs" />
     <Compile Include="Model\Qif.cs" />
     <Compile Include="Model\Transaction.cs" />
+    <Compile Include="Model\TypeDetectedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QifParser.cs" />
     <Compile Include="Qif2JsonListener.cs" />
-    <Compile Include="TransactionDetectedEventArgs.cs" />
+    <Compile Include="Model\TransactionDetectedEventArgs.cs" />
     <Compile Include="TreeListener.cs" />
   </ItemGroup>
   <ItemGroup>
