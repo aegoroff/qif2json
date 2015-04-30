@@ -7,7 +7,7 @@ using Antlr4.Runtime;
 
 namespace qif2json.parser.Debug
 {
-    public class ErrorListener : IAntlrErrorListener<IToken>
+    internal class ErrorListener : IAntlrErrorListener<IToken>
     {
         private readonly Action<string> output;
         private readonly TreeListener treeListener;

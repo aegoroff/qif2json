@@ -9,7 +9,7 @@ using Antlr4.Runtime.Tree;
 
 namespace qif2json.parser.Debug
 {
-    public class TreeListener : IParseTreeListener
+    internal class TreeListener : IParseTreeListener
     {
         private readonly Stack<string> idents = new Stack<string>();
         private readonly Action<string> output;
