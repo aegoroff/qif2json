@@ -14,6 +14,9 @@ namespace qif2json
         [UnnamedArgument(IsRequired = false, HelpText = "Path where compiled content will be stored.")]
         public string Output { get; set; }
 
+        [NamedArgument(IsRequired = false, ShortName = 'e', HelpText = "Input file encoding if automatic detection fails.")]
+        public string Encoding { get; set; }
+
         [NamedArgument(ShortName = 'v', HelpText = "Prints out more information")]
         public bool Verbose { get; set; }
         

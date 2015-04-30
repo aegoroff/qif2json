@@ -28,7 +28,7 @@ namespace qif2json
             var sw = new Stopwatch();
             sw.Start();
 
-            parser.CompileFile(argument.Input, output);
+            parser.CompileFile(argument.Input, output, argument.Encoding);
 
             sw.Stop();
             Console.WriteLine(string.Empty);

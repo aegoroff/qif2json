@@ -3,6 +3,7 @@
 // © 2015 Alexander Egorov
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Antlr4.Runtime;
@@ -37,13 +38,13 @@ namespace qif2json.parser
             return SerializeObject(model);
         }
         
-        public void CompileFile(string inputFile, string outputFile)
+        public void CompileFile(string inputFile, string outputFile, string encodingName = null)
         {
             if (!File.Exists(inputFile))
             {
                 return;
             }
-            var encoding = DetectEncoding(inputFile) ?? Encoding.UTF8;
+            var encoding = DetectEncoding(inputFile) ?? DefaultEncoding(encodingName);
             var input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read);
             var outputStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Read);
             var outputWriter = new StreamWriter(outputStream, encoding);
@@ -86,6 +87,19 @@ namespace qif2json.parser
             using (input)
             {
                 return detector.Detect(input);
+            }
+        }
+        
+        private static Encoding DefaultEncoding(string name)
+        {
+            try
+            {
+                return name.Return(Encoding.GetEncoding, Encoding.Default);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.ToString());
+                return Encoding.Default;
             }
         }
 
