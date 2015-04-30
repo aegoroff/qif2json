@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using qif2json.parser.Model;
 
 namespace qif2json.parser
@@ -7,6 +7,12 @@ namespace qif2json.parser
     {
         private Line currentLine;
         private Transaction currentTran;
+
+        /// <summary>
+        /// Occurs on transaction detection
+        /// </summary>
+        public event EventHandler<TransactionDetectedEventArgs> TransactionDetected;
+        public event EventHandler<TypeDetectedEventArgs> TypeDetected;
 
         internal Qif2JsonListener()
         {
@@ -18,11 +24,21 @@ namespace qif2json.parser
         public override void ExitType(Qif2json.TypeContext context)
         {
             this.JsonInstance.Type = context.TYPE().GetText();
+            this.EmitEvent();
         }
 
         public override void ExitAccount(Qif2json.AccountContext context)
         {
             this.JsonInstance.Type = context.ACCOUNT().GetText();
+            this.EmitEvent();
+        }
+
+        private void EmitEvent()
+        {
+            if (this.TypeDetected != null)
+            {
+                this.TypeDetected(this, new TypeDetectedEventArgs(this.JsonInstance.Type));
+            }
         }
 
         public override void ExitHeader(Qif2json.HeaderContext context)
@@ -32,7 +48,14 @@ namespace qif2json.parser
 
         public override void EnterEndTransaction(Qif2json.EndTransactionContext context)
         {
-            this.JsonInstance.Add(this.currentTran);
+            if (TransactionDetected != null)
+            {
+                this.TransactionDetected(this, new TransactionDetectedEventArgs(this.currentTran));
+            }
+            else
+            {
+                this.JsonInstance.Add(this.currentTran);
+            }
             this.currentTran = Transaction.Create();
         }
 

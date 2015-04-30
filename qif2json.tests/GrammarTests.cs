@@ -19,7 +19,7 @@ namespace qif2json.tests
 D03/03/10
 T-379.00
 PCITY OF SPRINGFIELD
-^", "Bank")]
+^")]
         [InlineData(@"!Type:Bank
 D03/03/10
 T-379.00
@@ -28,7 +28,7 @@ PCITY OF SPRINGFIELD
 D03/04/10
 T-20.28
 PYOUR LOCAL SUPERMARKET
-^", "Bank")]
+^")]
         [InlineData(@"!Type:Bank
 D03/03/10
 T-379.00
@@ -43,19 +43,17 @@ A
 A
 ^
 
-", "Bank")]
+")]
         [InlineData(@"!Account
 D03/03/10
 T-379.00
 PCITY OF SPRINGFIELD
-^", "Account")]
-        public void Tests(string qif, string type)
+^")]
+        public void Tests(string qif)
         {
-            var parser = new QifParser(output.WriteLine);
-            parser.Compile(qif);
+            var parser = new QifParser(output.WriteLine) { Idented = true };
+            var json = parser.Compile(qif);
             Assert.Equal(0, parser.NumberOfSyntaxErrors);
-            Assert.Equal(type, parser.Qif.Type);
-            var json = parser.ToJson(true);
             output.WriteLine(json);
             Assert.NotEmpty(json);
         }

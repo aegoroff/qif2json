@@ -56,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QifParser.cs" />
     <Compile Include="Qif2JsonListener.cs" />
+    <Compile Include="TransactionDetectedEventArgs.cs" />
     <Compile Include="TreeListener.cs" />
   </ItemGroup>
   <ItemGroup>
