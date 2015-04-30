@@ -45,6 +45,7 @@ namespace qif2json.parser
             var input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read);
             var outputStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Read);
             var outputWriter = new StreamWriter(outputStream);
+            var started = false;
             using (outputStream)
             {
                 using (outputWriter)
@@ -54,8 +55,16 @@ namespace qif2json.parser
                         ICharStream inputStream = new AntlrInputStream(input);
                         this.CompileStream(inputStream,
                             (o, args) => outputWriter.Write(CreateHead(args.Type)),
-                            (o, args) => outputWriter.Write(SerializeObject(args.Transaction))
-                        );
+                            (o, args) =>
+                            {
+                                if (started)
+                                {
+                                    // write comma only after first transaction
+                                    outputWriter.Write(",");
+                                }
+                                started = true;
+                                outputWriter.Write(this.SerializeObject(args.Transaction));
+                            });
                     }
                     outputWriter.Write("]}");
                     outputWriter.Flush();
