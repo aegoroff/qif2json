@@ -16,8 +16,11 @@ namespace qif2json
             {
                 Idented = argument.Idented
             };
-            var output = argument.Output ?? argument.Input + ".json";
-            parser.CompileFile(argument.Input, output);
+            using (parser)
+            {
+                var output = argument.Output ?? argument.Input + ".json";
+                parser.CompileFile(argument.Input, output);
+            }
         }
     }
 }
