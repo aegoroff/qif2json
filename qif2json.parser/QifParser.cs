@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Created by: egr
+// Created at: 30.04.2015
+// © 2015 Alexander Egorov
+
+using System;
 using System.IO;
 using Antlr4.Runtime;
 using Newtonsoft.Json;
@@ -6,10 +10,10 @@ using qif2json.parser.Model;
 
 namespace qif2json.parser
 {
-    public class QifParser : IDisposable
+    public class QifParser
     {
         private readonly Action<string> output;
-
+        
         public QifParser(Action<string> output = null)
         {
             this.output = output;
@@ -19,19 +23,18 @@ namespace qif2json.parser
         
         public bool Idented { get; set; }
 
-        public string Compile(string qif)
-        {
-            ICharStream inputStream = new AntlrInputStream(qif);
-            var json = this.CompileStream(inputStream, false);
-            return SerializeObject(json);
-        }
 
-        private string SerializeObject(object json)
+        public string CompileString(string qifString)
         {
-            return JsonConvert.SerializeObject(json, Idented ? Formatting.Indented : Formatting.None);
+            var model = new Qif();
+            ICharStream inputStream = new AntlrInputStream(qifString);
+            this.CompileStream(
+                inputStream, 
+                (o, args) => model.Type = args.Type, 
+                (o, args) => model.Add(args.Transaction)
+                );
+            return SerializeObject(model);
         }
-
-        private StreamWriter outputWriter;
         
         public void CompileFile(string inputFile, string outputFile)
         {
@@ -41,21 +44,30 @@ namespace qif2json.parser
             }
             var input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read);
             var outputStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Read);
-            this.outputWriter = new StreamWriter(outputStream);
+            var outputWriter = new StreamWriter(outputStream);
             using (outputStream)
             {
-                using (input)
+                using (outputWriter)
                 {
-                    ICharStream inputStream = new AntlrInputStream(input);
-                    this.CompileStream(inputStream, true);
+                    using (input)
+                    {
+                        ICharStream inputStream = new AntlrInputStream(input);
+                        this.CompileStream(inputStream,
+                            (o, args) => outputWriter.Write(CreateHead(args.Type)),
+                            (o, args) => outputWriter.Write(SerializeObject(args.Transaction))
+                        );
+                    }
+                    outputWriter.Write("]}");
+                    outputWriter.Flush();
+                    outputStream.Flush();
                 }
-                this.outputWriter.Write("]}");
-                this.outputWriter.Flush();
-                outputStream.Flush();
             }
         }
 
-        internal Qif CompileStream(ICharStream inputStream, bool subscribe)
+        private void CompileStream(
+            ICharStream inputStream, 
+            Action<object, TypeDetectedEventArgs> onTypeDetect, 
+            Action<object, TransactionDetectedEventArgs> onTransactionDetect)
         {
             var lexer = new Qif2jsonLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
@@ -73,55 +85,24 @@ namespace qif2json.parser
             NumberOfSyntaxErrors = parser.NumberOfSyntaxErrors;
             if (NumberOfSyntaxErrors > 0)
             {
-                return null;
+                return;
             }
 
             var listener = new Qif2JsonListener();
-            if (subscribe)
-            {
-                listener.TransactionDetected += this.OnTransactionDetected;
-                listener.TypeDetected += this.OnTypeDetected;
-            }
+            listener.TransactionDetected += (sender, e) => onTransactionDetect(sender, e);
+            listener.TypeDetected += (sender, e) => onTypeDetect(sender, e);
             parser.AddParseListener(listener);
             parser.compileUnit();
-            return listener.JsonInstance;
         }
 
-        private void OnTypeDetected(object sender, TypeDetectedEventArgs e)
+        private string SerializeObject(object json)
         {
-            Write("{");
-            var str = string.Format("\"Type\": \"{0}\", \"Transactions\": [", e.Type);
-            Write(str);
+            return JsonConvert.SerializeObject(json, this.Idented ? Formatting.Indented : Formatting.None);
         }
 
-        void OnTransactionDetected(object sender, TransactionDetectedEventArgs e)
+        private static string CreateHead(string type)
         {
-            Write(SerializeObject(e.Transaction));
-        }
-
-        private void Write(string data)
-        {
-            if (this.outputWriter != null)
-            {
-                this.outputWriter.Write(data);
-            }
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (this.outputWriter != null)
-                {
-                    this.outputWriter.Dispose();
-                }
-            }
+            return "{" + string.Format("\"Type\": \"{0}\", \"Transactions\": [", type);
         }
     }
 }

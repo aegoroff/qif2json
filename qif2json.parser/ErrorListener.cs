@@ -1,3 +1,7 @@
+// Created by: egr
+// Created at: 30.04.2015
+// © 2015 Alexander Egorov
+
 using System;
 using Antlr4.Runtime;
 

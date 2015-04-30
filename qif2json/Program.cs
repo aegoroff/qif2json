@@ -1,4 +1,8 @@
-﻿using BurnSystems.CommandLine;
+﻿// Created by: egr
+// Created at: 30.04.2015
+// © 2015 Alexander Egorov
+
+using BurnSystems.CommandLine;
 using qif2json.parser;
 
 namespace qif2json
@@ -16,11 +20,8 @@ namespace qif2json
             {
                 Idented = argument.Idented
             };
-            using (parser)
-            {
-                var output = argument.Output ?? argument.Input + ".json";
-                parser.CompileFile(argument.Input, output);
-            }
+            var output = argument.Output ?? argument.Input + ".json";
+            parser.CompileFile(argument.Input, output);
         }
     }
 }

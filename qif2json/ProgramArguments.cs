@@ -1,4 +1,8 @@
-﻿using BurnSystems.CommandLine.ByAttributes;
+﻿// Created by: egr
+// Created at: 30.04.2015
+// © 2015 Alexander Egorov
+
+using BurnSystems.CommandLine.ByAttributes;
 
 namespace qif2json
 {

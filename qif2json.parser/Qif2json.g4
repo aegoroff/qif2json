@@ -1,3 +1,8 @@
+// Created by: egr
+// Created at: 30.04.2015
+// QIF file format parser grammar
+// © 2015 Alexander Egorov
+
 parser grammar Qif2json;
 
 options { tokenVocab=Qif2jsonLexer; }

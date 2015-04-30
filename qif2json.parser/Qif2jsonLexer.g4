@@ -1,3 +1,8 @@
+// Created by: egr
+// Created at: 30.04.2015
+// QIF file format lexer grammar
+// © 2015 Alexander Egorov
+
 lexer grammar Qif2jsonLexer;
 
 TYPE_START : 'Type:' ;

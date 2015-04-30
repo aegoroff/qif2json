@@ -1,4 +1,8 @@
-﻿using qif2json.parser;
+﻿// Created by: egr
+// Created at: 30.04.2015
+// © 2015 Alexander Egorov
+
+using qif2json.parser;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -52,7 +56,7 @@ PCITY OF SPRINGFIELD
         public void Tests(string qif)
         {
             var parser = new QifParser(output.WriteLine) { Idented = true };
-            var json = parser.Compile(qif);
+            var json = parser.CompileString(qif);
             Assert.Equal(0, parser.NumberOfSyntaxErrors);
             output.WriteLine(json);
             Assert.NotEmpty(json);
