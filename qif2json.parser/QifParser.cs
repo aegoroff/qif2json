@@ -20,7 +20,8 @@ namespace qif2json.parser
     {
 #if DEBUG
         private readonly Action<string> output;
-#endif        
+#endif
+
         public QifParser(Action<string> output = null)
         {
 #if DEBUG
@@ -32,6 +33,8 @@ namespace qif2json.parser
         public int NumberOfSyntaxErrors { get; private set; }
         
         public bool Idented { get; set; }
+
+        public Statistic FileStatistic { get; private set; }
 
 
         public string CompileString(string qifString)
@@ -140,6 +143,7 @@ namespace qif2json.parser
             listener.TypeDetected += (sender, e) => onTypeDetect(sender, e);
             parser.AddParseListener(listener);
             parser.compileUnit();
+            this.FileStatistic = listener.FileStatistic;
         }
 
         private string SerializeObject(object json)

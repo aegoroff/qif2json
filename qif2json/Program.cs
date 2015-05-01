@@ -32,8 +32,12 @@ namespace qif2json
 
             sw.Stop();
             Console.WriteLine(string.Empty);
-            Console.WriteLine("Completed. The result file is: {0}", Path.GetFullPath(output));
-            Console.WriteLine("Time elapsed: {0}", sw.Elapsed);
+            Console.WriteLine("File type:                      {0}", parser.FileStatistic.FileType);
+            Console.WriteLine("Total transactions:             {0}", parser.FileStatistic.TotalTransactions);
+            Console.WriteLine("Total lines:                    {0}", parser.FileStatistic.TotalLines);
+            Console.WriteLine(string.Empty);
+            Console.WriteLine("Completed. The result file is:  {0}", Path.GetFullPath(output));
+            Console.WriteLine("Time elapsed:                   {0}", sw.Elapsed);
         }
     }
 }

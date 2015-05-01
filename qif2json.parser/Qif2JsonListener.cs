@@ -18,8 +18,11 @@ namespace qif2json.parser
         public event EventHandler<TransactionDetectedEventArgs> TransactionDetected;
         public event EventHandler<TypeDetectedEventArgs> TypeDetected;
 
-        internal Qif2JsonListener()
+        private readonly Statistic fileStatistic = new Statistic();
+
+        public Statistic FileStatistic
         {
+            get { return this.fileStatistic; }
         }
 
         public override void ExitType(Qif2json.TypeContext context)
@@ -34,6 +37,7 @@ namespace qif2json.parser
 
         private void EmitEvent(string type)
         {
+            this.fileStatistic.FileType = type;
             if (this.TypeDetected != null)
             {
                 this.TypeDetected(this, new TypeDetectedEventArgs(type));
@@ -51,6 +55,7 @@ namespace qif2json.parser
             {
                 this.TransactionDetected(this, new TransactionDetectedEventArgs(this.currentTran));
             }
+            this.fileStatistic.TotalTransactions++;
             this.currentTran = Transaction.Create();
         }
 
@@ -61,6 +66,7 @@ namespace qif2json.parser
 
         public override void ExitLine(Qif2json.LineContext context)
         {
+            this.fileStatistic.TotalLines++;
             this.currentTran.Add(this.currentLine);
         }
 
