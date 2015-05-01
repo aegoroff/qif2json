@@ -26,7 +26,8 @@ TYPE : 'Cash' // Cash account transactions
 
 LINE_START : CODE  -> pushMode(STR) ;
 
-fragment CODE : 'D'
+fragment CODE 
+     : 'D'
 	 | 'T'
 	 | 'M'
 	 | 'C'
