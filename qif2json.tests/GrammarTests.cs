@@ -61,8 +61,7 @@ A
         [InlineData(@"!Account
 D03/03/10
 T-379.00
-PCITY OF SPRINGFIELD
-^", 1, 3)]
+^", 1, 2)]
         public void Tests(string qif, long transactions, long lines)
         {
             var parser = new QifParser(output.WriteLine) { Idented = true };

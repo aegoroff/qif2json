@@ -6,7 +6,7 @@ namespace qif2json.parser.Model
 {
     public class Statistic
     {
-        public long TotalBatches { get; set; }
+        public long TotalAccounts { get; set; }
 
         public long TotalTransactions { get; set; }
         

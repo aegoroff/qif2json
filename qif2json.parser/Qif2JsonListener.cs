@@ -23,11 +23,13 @@ namespace qif2json.parser
         /// </summary>
         public event EventHandler<TransactionDetectedEventArgs> TransactionDetected;
 
-        public event EventHandler<TypeDetectedEventArgs> TypeDetected;
+        public event EventHandler<SyntaxElementEventArgs> TypeDetected;
+        
+        public event EventHandler<SyntaxElementEventArgs> LineCodeDetected;
 
-        public override void EnterBatch(Qif2json.BatchContext context)
+        public override void EnterAccount(Qif2json.AccountContext context)
         {
-            this.fileStatistic.TotalBatches++;
+            this.fileStatistic.TotalAccounts++;
         }
 
         public override void ExitType(Qif2json.TypeContext context)
@@ -35,7 +37,7 @@ namespace qif2json.parser
             this.EmitEvent(context.TYPE().GetText());
         }
 
-        public override void ExitAccount(Qif2json.AccountContext context)
+        public override void ExitAccountType(Qif2json.AccountTypeContext context)
         {
             this.EmitEvent(context.ACCOUNT().GetText());
         }
@@ -44,7 +46,7 @@ namespace qif2json.parser
         {
             if (this.TypeDetected != null)
             {
-                this.TypeDetected(this, new TypeDetectedEventArgs(type));
+                this.TypeDetected(this, new SyntaxElementEventArgs(type));
             }
         }
 
@@ -77,6 +79,10 @@ namespace qif2json.parser
         public override void ExitCode(Qif2json.CodeContext context)
         {
             this.currentLine.Code = context.LINE_START().GetText();
+            if (this.LineCodeDetected != null)
+            {
+                this.LineCodeDetected(this, new SyntaxElementEventArgs(this.currentLine.Code));
+            }
         }
 
         public override void ExitLiteral_string(Qif2json.Literal_stringContext context)

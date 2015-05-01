@@ -8,10 +8,10 @@ parser grammar Qif2json;
 options { tokenVocab=Qif2jsonLexer; }
 
 compileUnit
-	: batch+
+	: account+
 	;
 
-batch
+account
 	: startTransaction transaction*
 	;
 
@@ -20,7 +20,7 @@ startTransaction
 	;
 
 header 
-	: TYPE_MARKER (TYPE_START type | account) LINE_BREAK
+	: TYPE_MARKER (TYPE_START type | accountType) LINE_BREAK
 	;
 
 endTransaction 
@@ -37,7 +37,7 @@ line
 
 type : TYPE ;
 
-account : ACCOUNT ;
+accountType : ACCOUNT ;
 
 code : LINE_START ;
 
