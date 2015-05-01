@@ -7,7 +7,7 @@ using qif2json.parser.Model;
 
 namespace qif2json.parser
 {
-    public class Qif2JsonListener : Qif2jsonBaseListener
+    internal class Qif2JsonListener : Qif2jsonBaseListener
     {
         private Line currentLine;
         private Transaction currentTran;

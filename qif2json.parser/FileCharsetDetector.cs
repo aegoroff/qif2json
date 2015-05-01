@@ -8,7 +8,7 @@ using Ude;
 
 namespace qif2json.parser
 {
-    public class FileCharsetDetector
+    internal class FileCharsetDetector
     {
         public Encoding Detect(Stream stream)
         {
