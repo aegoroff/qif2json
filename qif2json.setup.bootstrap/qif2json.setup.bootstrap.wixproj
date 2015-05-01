@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.9</ProductVersion>
+    <ProjectGuid>7cea60ed-cac3-4448-ae46-65c03e827a04</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>qif2json.setup.bootstrap</OutputName>
+    <OutputType>Bundle</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+	<TmpFile>tmp.bat</TmpFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug;CONFIGURATION=Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+	<DefineConstants>CONFIGURATION=Release</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(APPVEYOR_BUILD_VERSION) != ''" >
+    <OutputName>qif2json.setup.$(APPVEYOR_BUILD_VERSION)</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(KeyFile) != '' AND $(CertPassword) != '' AND $(SignTool) != ''" >
+    <SignCommand>"$(SignTool)" sign /f "$(KeyFile)" /p $(CertPassword) /t http://timestamp.globalsign.com/scripts/timstamp.dll /v /d "qif2json" /du https://github.com/aegoroff/qif2json %251</SignCommand>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Bundle.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixNetFxExtension">
+      <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
+      <Name>WixNetFxExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixBalExtension">
+      <HintPath>$(WixExtDir)\WixBalExtension.dll</HintPath>
+      <Name>WixBalExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Theme.wxl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Theme.xml" />
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <Target Name="SignBundleEngine">
+	<Exec
+		Condition="$(SignCommand) != ''" 
+		Command="$(TmpFile) &quot;@(SignBundleEngine)&quot; > NUL 2>&amp;1" WorkingDirectory="$(MsBuildThisFileDirectory)"
+	/>
+  </Target>
+  <Target Name="SignBundle">
+	<Exec
+		Condition="$(SignCommand) != ''" 
+		Command="$(TmpFile) &quot;@(SignBundle)&quot; > NUL 2>&amp;1" WorkingDirectory="$(MsBuildThisFileDirectory)"
+	/>
+  </Target>
+  <Target Name="SignMsi">
+	<Exec
+		Condition="$(SignCommand) != ''" 
+		Command="$(TmpFile) &quot;@(SignMsi)&quot; > NUL 2>&amp;1" WorkingDirectory="$(MsBuildThisFileDirectory)"
+	/>
+  </Target>
+  <Target Name="SignCabs">
+	<Exec
+		Condition="$(SignCommand) != ''" 
+		Command="$(TmpFile) &quot;@(SignCabs)&quot; > NUL 2>&amp;1" WorkingDirectory="$(MsBuildThisFileDirectory)"
+	/>
+  </Target>
+  
+  <Target Name="BeforeBuild">
+    <WriteLinesToFile File="$(TmpFile)" Lines="$(SignCommand)" />
+    <ItemGroup>
+      <MsiFile Include="$(MSBuildProjectDirectory)\..\qif2json.setup\bin\$(Configuration)\*.msi" />
+    </ItemGroup>
+	<Exec
+		Condition="$(SignCommand) != ''" 
+		Command="$(TmpFile) &quot;%(MsiFile.Identity)&quot; > NUL 2>&amp;1" WorkingDirectory="$(MsBuildThisFileDirectory)"
+	/>
+  </Target>
+  
+  <Target Name="AfterBuild">
+	<Delete Files="$(TmpFile)" Condition="Exists('$(TmpFile)')" />
+  </Target>
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>
