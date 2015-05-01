@@ -1,4 +1,4 @@
-logviewer
+qif2json
 =========
 [![Build status](https://ci.appveyor.com/api/projects/status/3hjuqdoag2s4jhx2?svg=true)](https://ci.appveyor.com/project/aegoroff/qif2json)
 
