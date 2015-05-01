@@ -57,7 +57,6 @@
     <Compile Include="Debug\ErrorListener.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Model\Line.cs" />
-    <Compile Include="Model\Qif.cs" />
     <Compile Include="Model\Statistic.cs" />
     <Compile Include="Model\Transaction.cs" />
     <Compile Include="Model\TypeDetectedEventArgs.cs" />

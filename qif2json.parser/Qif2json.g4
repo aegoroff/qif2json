@@ -8,6 +8,10 @@ parser grammar Qif2json;
 options { tokenVocab=Qif2jsonLexer; }
 
 compileUnit
+	: batch+
+	;
+
+batch
 	: startTransaction transaction*
 	;
 

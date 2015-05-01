@@ -39,14 +39,16 @@ namespace qif2json.parser
 
         public string CompileString(string qifString)
         {
-            var model = new Qif();
-            ICharStream inputStream = new AntlrInputStream(qifString);
-            this.CompileStream(
-                inputStream, 
-                (o, args) => model.Type = args.Type, 
-                (o, args) => model.Add(args.Transaction)
-                );
-            return SerializeObject(model);
+            var input = new MemoryStream(Encoding.Unicode.GetBytes(qifString));
+            var output = new MemoryStream();
+
+            using (output)
+            {
+                this.Compile(input, output, Encoding.Unicode);
+
+                output.Seek(0, SeekOrigin.Begin);
+                return Encoding.Unicode.GetString(output.ToArray());
+            }
         }
         
         public void CompileFile(string inputFile, string outputFile, string encodingName = null)
@@ -57,38 +59,56 @@ namespace qif2json.parser
             }
             var encoding = DetectEncoding(inputFile) ?? DefaultEncoding(encodingName);
             var input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var outputStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Read);
-            var outputWriter = new StreamWriter(outputStream, encoding);
-            var started = false;
-            using (outputStream)
+            var output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Read);
+
+            using (output)
             {
-                using (outputWriter)
+                this.Compile(input, output, encoding);
+            }
+        }
+
+        private void Compile(Stream input, Stream output, Encoding encoding)
+        {
+            var outputWriter = new StreamWriter(output, encoding);
+            var transactionStarted = false;
+            var batchStarted = false;
+            using (input)
+            {
+                var inputReader = new StreamReader(input, encoding);
+                using (inputReader)
                 {
-                    using (input)
-                    {
-                        var sr = new StreamReader(input, encoding);
-                        using (sr)
+                    ICharStream inputStream = new AntlrInputStream(inputReader);
+                    this.CompileStream(inputStream,
+                        (o, args) =>
                         {
-                            ICharStream inputStream = new AntlrInputStream(sr);
-                            this.CompileStream(inputStream,
-                                (o, args) => outputWriter.Write(CreateHead(args.Type)),
-                                (o, args) =>
-                                {
-                                    if (started)
-                                    {
-                                        // write comma only after first transaction
-                                        outputWriter.Write(",");
-                                    }
-                                    started = true;
-                                    outputWriter.Write(this.SerializeObject(args.Transaction));
-                                });
-                        }
-                    }
-                    outputWriter.Write("]}");
-                    outputWriter.Flush();
-                    outputStream.Flush();
+                            if (batchStarted)
+                            {
+                                // write comma only after first batch
+                                outputWriter.Write("]},");
+                                transactionStarted = false;
+                            }
+                            else
+                            {
+                                outputWriter.Write("[");
+                            }
+                            batchStarted = true;
+                            outputWriter.Write(CreateHead(args.Type));
+                        },
+                        (o, args) =>
+                        {
+                            if (transactionStarted)
+                            {
+                                // write comma only after first transaction
+                                outputWriter.Write(",");
+                            }
+                            transactionStarted = true;
+                            outputWriter.Write(this.SerializeObject(args.Transaction));
+                        });
                 }
             }
+            outputWriter.Write("]}]");
+            outputWriter.Flush();
+            output.Flush();
         }
 
         private static Encoding DetectEncoding(string path)

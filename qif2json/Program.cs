@@ -32,7 +32,7 @@ namespace qif2json
 
             sw.Stop();
             Console.WriteLine(string.Empty);
-            Console.WriteLine("File type:              {0}", parser.FileStatistic.FileType);
+            Console.WriteLine("Total batches:          {0}", parser.FileStatistic.TotalBatches);
             Console.WriteLine("Total transactions:     {0}", parser.FileStatistic.TotalTransactions);
             Console.WriteLine("Total lines:            {0}", parser.FileStatistic.TotalLines);
             Console.WriteLine(string.Empty);

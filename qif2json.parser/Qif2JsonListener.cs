@@ -25,6 +25,11 @@ namespace qif2json.parser
 
         public event EventHandler<TypeDetectedEventArgs> TypeDetected;
 
+        public override void EnterBatch(Qif2json.BatchContext context)
+        {
+            this.fileStatistic.TotalBatches++;
+        }
+
         public override void ExitType(Qif2json.TypeContext context)
         {
             this.EmitEvent(context.TYPE().GetText());
@@ -37,7 +42,6 @@ namespace qif2json.parser
 
         private void EmitEvent(string type)
         {
-            this.fileStatistic.FileType = type;
             if (this.TypeDetected != null)
             {
                 this.TypeDetected(this, new TypeDetectedEventArgs(type));
