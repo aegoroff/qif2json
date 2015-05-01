@@ -9,21 +9,21 @@ namespace qif2json.parser
 {
     internal class Qif2JsonListener : Qif2jsonBaseListener
     {
+        private readonly Statistic fileStatistic = new Statistic();
         private Line currentLine;
         private Transaction currentTran;
-
-        /// <summary>
-        /// Occurs on transaction detection
-        /// </summary>
-        public event EventHandler<TransactionDetectedEventArgs> TransactionDetected;
-        public event EventHandler<TypeDetectedEventArgs> TypeDetected;
-
-        private readonly Statistic fileStatistic = new Statistic();
 
         public Statistic FileStatistic
         {
             get { return this.fileStatistic; }
         }
+
+        /// <summary>
+        ///     Occurs on transaction detection
+        /// </summary>
+        public event EventHandler<TransactionDetectedEventArgs> TransactionDetected;
+
+        public event EventHandler<TypeDetectedEventArgs> TypeDetected;
 
         public override void ExitType(Qif2json.TypeContext context)
         {
@@ -51,7 +51,7 @@ namespace qif2json.parser
 
         public override void EnterEndTransaction(Qif2json.EndTransactionContext context)
         {
-            if (TransactionDetected != null)
+            if (this.TransactionDetected != null)
             {
                 this.TransactionDetected(this, new TransactionDetectedEventArgs(this.currentTran));
             }
