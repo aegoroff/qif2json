@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.9</ProductVersion>
+    <ProjectGuid>22596487-2c96-48d5-8629-2ea3fcc662f6</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>qif2json.setup</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug;CONFIGURATION=Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+	<DefineConstants>CONFIGURATION=Release</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixNetFxExtension">
+      <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
+      <Name>WixNetFxExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <Target Name="BeforeBuild">
+    <ItemGroup>
+      <BinFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.exe" Exclude="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.vshost.exe"/>
+      <BinFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.dll" />
+    </ItemGroup>
+	<PropertyGroup Condition="$(KeyFile) != '' AND $(CertPassword) != '' AND $(SignTool) != ''" >
+	  <SignCommand>"$(SignTool)" sign /f "$(KeyFile)" /p $(CertPassword) /t http://timestamp.globalsign.com/scripts/timstamp.dll /v /d "qif2json" /du https://github.com/aegoroff/qif2json %251</SignCommand>
+	</PropertyGroup> 
+	<PropertyGroup Condition="$(SignCommand) != ''" >
+		<TmpFile>tmp.bat</TmpFile>
+	</PropertyGroup>
+    <WriteLinesToFile Condition="$(SignCommand) != ''" File="$(TmpFile)" Lines="$(SignCommand)"/>
+	<Exec 
+		Condition="$(SignCommand) != ''" 
+		Command="$(TmpFile) &quot;%(BinFile.Identity)&quot; > NUL 2>&amp;1" WorkingDirectory="$(MsBuildThisFileDirectory)"
+	/>
+	<Delete Files="$(TmpFile)" Condition="$(SignCommand) != ''" />
+  </Target>
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>
