@@ -90,7 +90,20 @@
 							http://msdn.microsoft.com/library/en-us/msi/setup/ice38.asp
 						-->
 						<RegistryValue Root="HKCU" Key="Software\Qif2Json" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-						<Shortcut Name="License" Target="[!LICENSE.txt]" Id="Qif2JsonLicenseStartMenuShortcut" WorkingDirectory="Qif2Json" Directory="Qif2JsonProgramMenuFolder" />
+
+                        <Shortcut Id="Qif2JsonStartMenuShortcut"
+                                Name="QIF to JSON"
+                                Description="QIF to JSON conversion tool"
+                                Target="[%ComSpec]"
+                                Arguments='/k "[!qif2json.exe]"'
+                                WorkingDirectory="INSTALLFOLDER" Show="normal"/>
+                        
+						<Shortcut 
+                            Name="License" 
+                            Target="[!LICENSE.txt]" 
+                            Id="Qif2JsonLicenseStartMenuShortcut"
+                            WorkingDirectory="INSTALLFOLDER" 
+                            Directory="Qif2JsonProgramMenuFolder" />
 						<!--
 							Fix ICE64 by adding a remove folder element 
 							http://windowssdk.msdn.microsoft.com/en-us/library/ms704358.aspx
