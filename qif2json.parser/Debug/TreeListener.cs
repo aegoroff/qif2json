@@ -2,6 +2,7 @@
 // Created at: 30.04.2015
 // © 2015 Alexander Egorov
 
+#if DEBUG
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
@@ -53,3 +54,4 @@ namespace qif2json.parser.Debug
         }
     }
 }
+#endif
