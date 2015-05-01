@@ -42,10 +42,10 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Theme.wxl" />
+    <None Include="Theme.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Theme.xml" />
+    <None Include="Theme.wxl" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <Target Name="SignBundleEngine">
