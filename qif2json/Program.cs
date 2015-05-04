@@ -27,28 +27,26 @@ namespace qif2json
 
             var sw = new Stopwatch();
             sw.Start();
-
-            var fi = new FileInfo(argument.Input);
-            var fs = new FileSize(fi.Length, true);
-
             try
             {
+                var fi = new FileInfo(argument.Input);
+                var fs = new FileSize(fi.Length, true);
                 parser.CompileFile(argument.Input, output, argument.Encoding);
+
+                sw.Stop();
+                Console.WriteLine(string.Empty);
+                Console.WriteLine("Total accounts:         {0}", parser.FileStatistic.TotalAccounts);
+                Console.WriteLine("Total transactions:     {0}", parser.FileStatistic.TotalTransactions);
+                Console.WriteLine("Total lines:            {0}", parser.FileStatistic.TotalLines);
+                Console.WriteLine("File size:              {0}", fs.Format());
+                Console.WriteLine(string.Empty);
+                Console.WriteLine("The result written to:  {0}", Path.GetFullPath(output));
+                Console.WriteLine("Time elapsed:           {0}", sw.Elapsed);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-
-            sw.Stop();
-            Console.WriteLine(string.Empty);
-            Console.WriteLine("Total accounts:         {0}", parser.FileStatistic.TotalAccounts);
-            Console.WriteLine("Total transactions:     {0}", parser.FileStatistic.TotalTransactions);
-            Console.WriteLine("Total lines:            {0}", parser.FileStatistic.TotalLines);
-            Console.WriteLine("File size:              {0}", fs.Format());
-            Console.WriteLine(string.Empty);
-            Console.WriteLine("The result written to:  {0}", Path.GetFullPath(output));
-            Console.WriteLine("Time elapsed:           {0}", sw.Elapsed);
         }
     }
 }
