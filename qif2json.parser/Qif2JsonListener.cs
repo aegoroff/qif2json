@@ -3,15 +3,22 @@
 // © 2015 Alexander Egorov
 
 using System;
+using System.Collections.Generic;
 using qif2json.parser.Model;
 
 namespace qif2json.parser
 {
     internal class Qif2JsonListener : Qif2jsonBaseListener
     {
+        private readonly Func<string, string> keyResolver;
         private readonly Statistic fileStatistic = new Statistic();
-        private Line currentLine;
+        private IDictionary<string, string> currentLine;
         private Transaction currentTran;
+
+        internal Qif2JsonListener(Func<string, string> keyResolver)
+        {
+            this.keyResolver = keyResolver;
+        }
 
         public Statistic FileStatistic
         {
@@ -24,8 +31,6 @@ namespace qif2json.parser
         public event EventHandler<TransactionDetectedEventArgs> TransactionDetected;
 
         public event EventHandler<SyntaxElementEventArgs> TypeDetected;
-        
-        public event EventHandler<SyntaxElementEventArgs> LineCodeDetected;
 
         public override void EnterAccount(Qif2json.AccountContext context)
         {
@@ -59,26 +64,23 @@ namespace qif2json.parser
             this.currentTran = Transaction.Create();
         }
 
-        public override void EnterLine(Qif2json.LineContext context)
-        {
-            this.currentLine = new Line();
-        }
-
         public override void ExitLine(Qif2json.LineContext context)
         {
             this.fileStatistic.TotalLines++;
             this.currentTran.Add(this.currentLine);
         }
 
+        private string lineKey;
+
         public override void ExitCode(Qif2json.CodeContext context)
         {
-            this.currentLine.Code = context.LINE_START().GetText();
-            this.LineCodeDetected.Do(handler => handler(this, new SyntaxElementEventArgs(this.currentLine.Code)));
+            this.lineKey = keyResolver(context.LINE_START().GetText());
         }
 
         public override void ExitLiteral_string(Qif2json.Literal_stringContext context)
         {
-            this.currentLine.Value = context.LITERAL().GetText().TrimEnd('\r', '\n');
+            var value = context.LITERAL().GetText().TrimEnd('\r', '\n');
+            this.currentLine = new Dictionary<string, string> { { this.lineKey, value } };
         }
     }
 }

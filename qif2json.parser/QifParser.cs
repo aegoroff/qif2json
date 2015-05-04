@@ -30,20 +30,13 @@ namespace qif2json.parser
 #if DEBUG
             this.output = output;
 #endif
-            var nonInvestmentCodes = new[] { "D", "T", "C", "N", "P", "M", "A", "L", "S", "E", "$" }.ToDictionary(s => s);
-            var investmentCodes = new[] { "D", "N", "Y", "I", "Q", "T", "C", "P", "M", "O", "L", "$" }.ToDictionary(s => s);
-            var accountCodes = new[] { "N", "T", "D", "L", "/", "$" }.ToDictionary(s => s);
-            var catListCodes = new[] { "N", "D", "T", "I", "E", "B", "R" }.ToDictionary(s => s);
-            var classCodes = new[] { "N", "D" }.ToDictionary(s => s);
-            var memTranList = new[] { "KC", "KD", "KP", "KI", "KE", "T", "C", "P", "M", "A", "L", "S", "E", "$", "1", "2", "3", "4", "5", "6", "7" }.ToDictionary(s => s);
-            this.allowedCodes.Add(AccountType.NonInvestment, nonInvestmentCodes);
-            this.allowedCodes.Add(AccountType.Investment, investmentCodes);
-            this.allowedCodes.Add(AccountType.AccountInformation, accountCodes);
-            this.allowedCodes.Add(AccountType.CategoryList, catListCodes);
-            this.allowedCodes.Add(AccountType.ClassList, classCodes);
-            this.allowedCodes.Add(AccountType.MemorizedTransactionList, memTranList);
+            this.allowedCodes.Add(AccountType.NonInvestment, NonInvestmentCodes());
+            this.allowedCodes.Add(AccountType.Investment, InvestmentCodes());
+            this.allowedCodes.Add(AccountType.AccountInformation, AccountCodes());
+            this.allowedCodes.Add(AccountType.CategoryList, CatListCodes());
+            this.allowedCodes.Add(AccountType.ClassList, ClassCodes());
+            this.allowedCodes.Add(AccountType.MemorizedTransactionList, MemorizedCodes());
         }
-
 
         public int NumberOfSyntaxErrors { get; private set; }
         
@@ -160,12 +153,12 @@ namespace qif2json.parser
 
 #if DEBUG
             parser.Trace = true;
-            if (output != null)
+            output.Do(instance =>
             {
                 var treeL = new TreeListener(output, parser);
                 parser.AddParseListener(treeL);
-                parser.AddErrorListener(new ErrorListener(output, treeL));
-            }
+                parser.AddErrorListener(new ErrorListener(instance, treeL));
+            });
 #endif
             NumberOfSyntaxErrors = parser.NumberOfSyntaxErrors;
             if (NumberOfSyntaxErrors > 0)
@@ -173,21 +166,122 @@ namespace qif2json.parser
                 return;
             }
 
-            var listener = new Qif2JsonListener();
+            var listener = new Qif2JsonListener(KeyResolver);
             listener.TransactionDetected += (sender, e) => onTransactionDetect(sender, e);
             listener.TypeDetected += (sender, e) => onTypeDetect(sender, e);
-            listener.LineCodeDetected += this.OnLineCodeDetected;
             parser.AddParseListener(listener);
             parser.compileUnit();
             this.FileStatistic = listener.FileStatistic;
         }
 
-        private void OnLineCodeDetected(object sender, SyntaxElementEventArgs args)
+        private string KeyResolver(string code)
         {
-            if (!this.allowedCodes[currentType].ContainsKey(args.Element))
+            if (!this.allowedCodes[currentType].ContainsKey(code))
             {
-                throw new NotSupportedException(string.Format("Code {0} not supported for {1} account type", args.Element, currentType));
+                throw new NotSupportedException(string.Format("Code {0} not supported for {1} account type", code, currentType));
             }
+            return this.allowedCodes[currentType][code];
+        }
+
+        private static Dictionary<string, string> NonInvestmentCodes()
+        {
+            return new[]
+            {
+                new { c = "D", v = "Date" },
+                new { c = "T", v = "Amount" },
+                new { c = "C", v = "ClearedStatus" },
+                new { c = "N", v = "Num" },
+                new { c = "P", v = "Payee" },
+                new { c = "M", v = "Memo" },
+                new { c = "A", v = "Address" },
+                new { c = "L", v = "Category" },
+                new { c = "S", v = "CategoryInSplit" },
+                new { c = "E", v = "MemoInSplit" },
+                new { c = "$", v = "DollarAmountOfSplit" }
+            }.ToDictionary(code => code.c, code => code.v);
+        }
+        
+        private static Dictionary<string, string> InvestmentCodes()
+        {
+            return new[]
+            {
+                new { c = "D", v = "Date" },
+                new { c = "N", v = "Action" },
+                new { c = "Y", v = "Security" },
+                new { c = "I", v = "Price" },
+                new { c = "Q", v = "Quantity" },
+                new { c = "T", v = "TransactionAmount" },
+                new { c = "C", v = "ClearedStatus" },
+                new { c = "P", v = "FirstLineText" },
+                new { c = "M", v = "Memo" },
+                new { c = "O", v = "Commission" },
+                new { c = "L", v = "Account" },
+                new { c = "$", v = "Amount" }
+            }.ToDictionary(code => code.c, code => code.v);
+        }
+        
+        private static Dictionary<string, string> ClassCodes()
+        {
+            return new[]
+            {
+                new { c = "D", v = "Description" },
+                new { c = "N", v = "Name" }
+            }.ToDictionary(code => code.c, code => code.v);
+        }
+        
+        private static Dictionary<string, string> AccountCodes()
+        {
+            return new[]
+            {
+                new { c = "D", v = "Description" },
+                new { c = "N", v = "Name" },
+                new { c = "T", v = "Type" },
+                new { c = "L", v = "CreditLimit" },
+                new { c = "/", v = "BalanceDate" },
+                new { c = "$", v = "BalanceAmount" }
+            }.ToDictionary(code => code.c, code => code.v);
+        }
+        
+        private static Dictionary<string, string> CatListCodes()
+        {
+            return new[]
+            {
+                new { c = "D", v = "Description" },
+                new { c = "N", v = "CategoryName" },
+                new { c = "T", v = "TaxRelatedOrOmitted" },
+                new { c = "I", v = "IncomeCategory" },
+                new { c = "E", v = "ExpenseCategory" },
+                new { c = "B", v = "BudgetAmount" },
+                new { c = "R", v = "TaxSchedule" },
+            }.ToDictionary(code => code.c, code => code.v);
+        }
+
+        private static Dictionary<string, string> MemorizedCodes()
+        {
+            return new[]
+            {
+                new { c = "T", v = "Amount" },
+                new { c = "C", v = "ClearedStatus" },
+                new { c = "P", v = "Payee" },
+                new { c = "M", v = "Memo" },
+                new { c = "A", v = "Address" },
+                new { c = "L", v = "CategoryOrClass" },
+                new { c = "S", v = "CategoryOrClassInSplit" },
+                new { c = "E", v = "MemoInSplit" },
+                new { c = "$", v = "DollarAmountOfSplit" },
+                new { c = "KC", v = "CheckTransaction" },
+                new { c = "KD", v = "DepositTransaction" },
+                new { c = "KP", v = "PaymentTransaction" },
+                new { c = "KI", v = "InvestmentTransaction" },
+                new { c = "KE", v = "ElectronicPayeeTransaction" },
+                new { c = "1", v = "FirstPaymentDate" },
+                new { c = "2", v = "TotalYearsForLoan" },
+                new { c = "3", v = "NumberPaymentsDone" },
+                new { c = "4", v = "NumberPeriodsPerYear" },
+                new { c = "5", v = "InterestRate" },
+                new { c = "6", v = "CurrentLoanBalance" },
+                new { c = "7", v = "OriginalLoanAmount" }
+            }.ToDictionary(code => code.c, code => code.v);
         }
 
 
