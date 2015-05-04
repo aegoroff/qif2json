@@ -62,6 +62,12 @@ A
 D03/03/10
 T-379.00
 ^", 1, 2)]
+        [InlineData(@"!Type:Memorized
+T-50.00
+POakwood Gardens
+MRent
+KC
+^", 1, 4)]
         public void Tests(string qif, long transactions, long lines)
         {
             var parser = new QifParser(output.WriteLine) { Idented = true };
