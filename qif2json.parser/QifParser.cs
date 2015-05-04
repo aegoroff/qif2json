@@ -153,12 +153,12 @@ namespace qif2json.parser
 
 #if DEBUG
             parser.Trace = true;
-            if (output != null)
+            output.Do(instance =>
             {
                 var treeL = new TreeListener(output, parser);
                 parser.AddParseListener(treeL);
-                parser.AddErrorListener(new ErrorListener(output, treeL));
-            }
+                parser.AddErrorListener(new ErrorListener(instance, treeL));
+            });
 #endif
             NumberOfSyntaxErrors = parser.NumberOfSyntaxErrors;
             if (NumberOfSyntaxErrors > 0)
