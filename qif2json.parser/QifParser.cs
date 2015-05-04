@@ -30,18 +30,12 @@ namespace qif2json.parser
 #if DEBUG
             this.output = output;
 #endif
-            var nonInvestmentCodes = NonInvestmentCodes();
-            var investmentCodes = InvestmentCodes();
-            var accountCodes = AccountCodes();
-            var catListCodes = CatListCodes();
-            var classCodes = ClassCodes();
-            var memTranList = MemorizedCodes();
-            this.allowedCodes.Add(AccountType.NonInvestment, nonInvestmentCodes);
-            this.allowedCodes.Add(AccountType.Investment, investmentCodes);
-            this.allowedCodes.Add(AccountType.AccountInformation, accountCodes);
-            this.allowedCodes.Add(AccountType.CategoryList, catListCodes);
-            this.allowedCodes.Add(AccountType.ClassList, classCodes);
-            this.allowedCodes.Add(AccountType.MemorizedTransactionList, memTranList);
+            this.allowedCodes.Add(AccountType.NonInvestment, NonInvestmentCodes());
+            this.allowedCodes.Add(AccountType.Investment, InvestmentCodes());
+            this.allowedCodes.Add(AccountType.AccountInformation, AccountCodes());
+            this.allowedCodes.Add(AccountType.CategoryList, CatListCodes());
+            this.allowedCodes.Add(AccountType.ClassList, ClassCodes());
+            this.allowedCodes.Add(AccountType.MemorizedTransactionList, MemorizedCodes());
         }
 
         public int NumberOfSyntaxErrors { get; private set; }
