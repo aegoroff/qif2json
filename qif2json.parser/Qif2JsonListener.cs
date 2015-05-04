@@ -44,10 +44,7 @@ namespace qif2json.parser
 
         private void EmitEvent(string type)
         {
-            if (this.TypeDetected != null)
-            {
-                this.TypeDetected(this, new SyntaxElementEventArgs(type));
-            }
+            this.TypeDetected.Do(handler => handler(this, new SyntaxElementEventArgs(type)));
         }
 
         public override void ExitHeader(Qif2json.HeaderContext context)
@@ -57,10 +54,7 @@ namespace qif2json.parser
 
         public override void EnterEndTransaction(Qif2json.EndTransactionContext context)
         {
-            if (this.TransactionDetected != null)
-            {
-                this.TransactionDetected(this, new TransactionDetectedEventArgs(this.currentTran));
-            }
+            this.TransactionDetected.Do(handler => handler(this, new TransactionDetectedEventArgs(this.currentTran)));
             this.fileStatistic.TotalTransactions++;
             this.currentTran = Transaction.Create();
         }
@@ -79,10 +73,7 @@ namespace qif2json.parser
         public override void ExitCode(Qif2json.CodeContext context)
         {
             this.currentLine.Code = context.LINE_START().GetText();
-            if (this.LineCodeDetected != null)
-            {
-                this.LineCodeDetected(this, new SyntaxElementEventArgs(this.currentLine.Code));
-            }
+            this.LineCodeDetected.Do(handler => handler(this, new SyntaxElementEventArgs(this.currentLine.Code)));
         }
 
         public override void ExitLiteral_string(Qif2json.Literal_stringContext context)

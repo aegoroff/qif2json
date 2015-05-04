@@ -27,6 +27,25 @@ namespace qif2json.parser
             return input == null ? failure : evaluator(input);
         }
 
+        /// <summary>
+        /// Do Monad that runs action if input is not null
+        /// </summary>
+        /// <typeparam name="TInput">Input type</typeparam>
+        /// <param name="input">Input instance</param>
+        /// <param name="action">Action to run if input is not null</param>
+        /// <returns>if input null returns null otherwise runs action and returns input</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TInput Do<TInput>(this TInput input, Action<TInput> action)
+            where TInput : class
+        {
+            if (input == null)
+            {
+                return null;
+            }
+            action(input);
+            return input;
+        }
+
         public static string FormatString(this ulong value)
         {
             if (value == 0)
