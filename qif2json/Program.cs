@@ -14,24 +14,24 @@ namespace qif2json
     {
         private static void Main(string[] args)
         {
-            var argument = Parser.ParseIntoOrShowUsage<ProgramArguments>(args);
-            if (argument == null)
-            {
-                return;
-            }
+            Parser.ParseIntoOrShowUsage<ProgramArguments>(args).Do(Complie);
+        }
+
+        private static void Complie(ProgramArguments arguments)
+        {
             var parser = new QifParser
             {
-                Idented = argument.Idented
+                Idented = arguments.Idented
             };
-            var output = argument.Output ?? argument.Input + ".json";
+            var output = arguments.Output ?? arguments.Input + ".json";
 
             var sw = new Stopwatch();
             sw.Start();
             try
             {
-                var fi = new FileInfo(argument.Input);
+                var fi = new FileInfo(arguments.Input);
                 var fs = new FileSize(fi.Length, true);
-                parser.CompileFile(argument.Input, output, argument.Encoding);
+                parser.CompileFile(arguments.Input, output, arguments.Encoding);
 
                 sw.Stop();
                 Console.WriteLine(string.Empty);
