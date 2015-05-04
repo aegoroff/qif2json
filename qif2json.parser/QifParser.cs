@@ -35,7 +35,7 @@ namespace qif2json.parser
             var accountCodes = AccountCodes();
             var catListCodes = CatListCodes();
             var classCodes = ClassCodes();
-            var memTranList = new[] { "KC", "KD", "KP", "KI", "KE", "T", "C", "P", "M", "A", "L", "S", "E", "$", "1", "2", "3", "4", "5", "6", "7" }.ToDictionary(s => s);
+            var memTranList = MemorizedCodes();
             this.allowedCodes.Add(AccountType.NonInvestment, nonInvestmentCodes);
             this.allowedCodes.Add(AccountType.Investment, investmentCodes);
             this.allowedCodes.Add(AccountType.AccountInformation, accountCodes);
@@ -259,6 +259,34 @@ namespace qif2json.parser
                 new { c = "E", v = "ExpenseCategory" },
                 new { c = "B", v = "BudgetAmount" },
                 new { c = "R", v = "TaxSchedule" },
+            }.ToDictionary(code => code.c, code => code.v);
+        }
+
+        private static Dictionary<string, string> MemorizedCodes()
+        {
+            return new[]
+            {
+                new { c = "T", v = "Amount" },
+                new { c = "C", v = "ClearedStatus" },
+                new { c = "P", v = "Payee" },
+                new { c = "M", v = "Memo" },
+                new { c = "A", v = "Address" },
+                new { c = "L", v = "CategoryOrClass" },
+                new { c = "S", v = "CategoryOrClassInSplit" },
+                new { c = "E", v = "MemoInSplit" },
+                new { c = "$", v = "DollarAmountOfSplit" },
+                new { c = "KC", v = "CheckTransaction" },
+                new { c = "KD", v = "DepositTransaction" },
+                new { c = "KP", v = "PaymentTransaction" },
+                new { c = "KI", v = "InvestmentTransaction" },
+                new { c = "KE", v = "ElectronicPayeeTransaction" },
+                new { c = "1", v = "FirstPaymentDate" },
+                new { c = "2", v = "TotalYearsForLoan" },
+                new { c = "3", v = "NumberPaymentsDone" },
+                new { c = "4", v = "NumberPeriodsPerYear" },
+                new { c = "5", v = "InterestRate" },
+                new { c = "6", v = "CurrentLoanBalance" },
+                new { c = "7", v = "OriginalLoanAmount" }
             }.ToDictionary(code => code.c, code => code.v);
         }
 
