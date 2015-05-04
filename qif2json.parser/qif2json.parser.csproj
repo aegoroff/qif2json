@@ -58,7 +58,6 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="FileSize.cs" />
     <Compile Include="Model\AccountType.cs" />
-    <Compile Include="Model\Line.cs" />
     <Compile Include="Model\Statistic.cs" />
     <Compile Include="Model\Transaction.cs" />
     <Compile Include="Model\SyntaxElementEventArgs.cs" />
