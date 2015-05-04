@@ -68,6 +68,25 @@ POakwood Gardens
 MRent
 KC
 ^", 1, 4)]
+        [InlineData(@"!Type:Invst
+D8/25/93
+NShrsIn
+Yibm4
+I11.260
+Q88.81
+CX
+MOpening
+^
+D8/25/93
+NBuyX
+Yibm4
+I11.030
+Q9.066
+T100.00
+MEst. price as of 8/25/93
+L[CHECKING]
+$100.00
+^", 2, 16)]
         public void Tests(string qif, long transactions, long lines)
         {
             var parser = new QifParser(output.WriteLine) { Idented = true };
