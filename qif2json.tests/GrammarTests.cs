@@ -23,7 +23,7 @@ namespace qif2json.tests
 D03/03/10
 T-379.00
 PCITY OF SPRINGFIELD
-^", 1, 3)]
+^", 1, 3, false)]
         [InlineData(@"!Type:Bank
 D03/03/10
 T-379.00
@@ -33,7 +33,7 @@ PCITY OF SPRINGFIELD
 D03/04/10
 T-37.00
 PCITY OF SPRINGFIELD
-^", 2, 6)]
+^", 2, 6, true)]
         [InlineData(@"!Type:Bank
 D03/03/10
 T-379.00
@@ -42,7 +42,7 @@ PCITY OF SPRINGFIELD
 D03/04/10
 T-20.28
 PYOUR LOCAL SUPERMARKET
-^", 2, 6)]
+^", 2, 6, true)]
         [InlineData(@"!Type:Bank
 D03/03/10
 T-379.00
@@ -57,17 +57,17 @@ A
 A
 ^
 
-", 2, 10)]
+", 2, 10, true)]
         [InlineData(@"!Account
 D03/03/10
 T-379.00
-^", 1, 2)]
+^", 1, 2, true)]
         [InlineData(@"!Type:Memorized
 T-50.00
 POakwood Gardens
 MRent
 KC
-^", 1, 4)]
+^", 1, 4, true)]
         [InlineData(@"!Type:Invst
 D8/25/93
 NShrsIn
@@ -86,10 +86,10 @@ T100.00
 MEst. price as of 8/25/93
 L[CHECKING]
 $100.00
-^", 2, 16)]
-        public void Tests(string qif, long transactions, long lines)
+^", 2, 16, true)]
+        public void Tests(string qif, long transactions, long lines, bool addId)
         {
-            var parser = new QifParser(output.WriteLine) { Idented = true };
+            var parser = new QifParser(output.WriteLine) { Idented = true, AddId = addId};
             var json = parser.CompileString(qif);
             Assert.Equal(0, parser.NumberOfSyntaxErrors);
             output.WriteLine(json);

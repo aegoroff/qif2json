@@ -21,7 +21,8 @@ namespace qif2json
         {
             var parser = new QifParser
             {
-                Idented = arguments.Idented
+                Idented = arguments.Idented, 
+                AddId = arguments.AddId
             };
             var output = arguments.Output ?? arguments.Input + ".json";
 
