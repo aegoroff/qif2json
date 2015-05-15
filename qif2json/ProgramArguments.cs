@@ -22,5 +22,8 @@ namespace qif2json
         
         [NamedArgument(ShortName = 'i', HelpText = "Output JSON idented (not optimized)")]
         public bool Idented { get; set; }
+        
+        [NamedArgument(ShortName = 'd', HelpText = "Add transaction unique identifier (All transaction data SHA-1 hash)")]
+        public bool AddId { get; set; }
     }
 }

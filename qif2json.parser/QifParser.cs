@@ -41,6 +41,8 @@ namespace qif2json.parser
         public int NumberOfSyntaxErrors { get; private set; }
         
         public bool Idented { get; set; }
+        
+        public bool AddId { get; set; }
 
         public Statistic FileStatistic { get; private set; }
 
@@ -110,7 +112,10 @@ namespace qif2json.parser
                                 outputWriter.Write(",");
                             }
                             transactionStarted = true;
-                            args.Transaction.CreateIdentifier(encoding);
+                            if (this.AddId)
+                            {
+                                args.Transaction.CreateIdentifier(encoding);
+                            }
                             outputWriter.Write(this.SerializeObject(args.Transaction));
                         });
                 }
