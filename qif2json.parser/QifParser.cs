@@ -110,6 +110,7 @@ namespace qif2json.parser
                                 outputWriter.Write(",");
                             }
                             transactionStarted = true;
+                            args.Transaction.CreateIdentifier(encoding);
                             outputWriter.Write(this.SerializeObject(args.Transaction));
                         });
                 }
