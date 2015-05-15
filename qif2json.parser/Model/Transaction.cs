@@ -35,7 +35,7 @@ namespace qif2json.parser.Model
 
         internal void CreateIdentifier(Encoding encoding)
         {
-            var data = string.Join(string.Empty, this.lines);
+            var data = string.Join(string.Empty, this.lines.Select(pair => pair.Values).SelectMany(value => value));
             var hash = Sha1HashStringForUtf8String(data, encoding);
             this.Add(new Dictionary<string, string>
             {
