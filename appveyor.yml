@@ -32,9 +32,14 @@ assembly_info:
   assembly_informational_version: "{version}"
 
 install:
-    - ps: Start-FileDownload $env:PfxUri -FileName $env:KeyFile
-    - ps: Start-FileDownload $env:SnkUri -FileName $env:Qif2JsonSnkPath
     - cmd: nuget restore
+    - ps: | 
+    if($env:PfxUri -and $env:SnkUri) 
+    {
+       Start-FileDownload $env:PfxUri -FileName $env:KeyFile
+       Start-FileDownload $env:SnkUri -FileName $env:Qif2JsonSnkPath
+	}
+    
 
 platform: Any CPU
 
