@@ -38,7 +38,7 @@ install:
     {
        Start-FileDownload $env:PfxUri -FileName $env:KeyFile
        Start-FileDownload $env:SnkUri -FileName $env:Qif2JsonSnkPath
-	}
+    }
     
 
 platform: Any CPU
