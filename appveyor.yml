@@ -34,7 +34,7 @@ assembly_info:
 install:
     - cmd: nuget restore
     - ps: | 
-    if($env:PfxUri -and $env:SnkUri) 
+    if($env:PfxUri -ne $null -and $env:SnkUri -ne $null) 
     {
        Start-FileDownload $env:PfxUri -FileName $env:KeyFile
        Start-FileDownload $env:SnkUri -FileName $env:Qif2JsonSnkPath
