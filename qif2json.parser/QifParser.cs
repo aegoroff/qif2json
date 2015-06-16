@@ -163,6 +163,7 @@ namespace qif2json.parser
             {
                 var treeL = new TreeListener(output, parser);
                 parser.AddParseListener(treeL);
+                parser.AddErrorListener(new DiagnosticErrorListener());
                 parser.AddErrorListener(new ErrorListener(instance, treeL));
             });
 #endif
