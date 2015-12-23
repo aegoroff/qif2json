@@ -59,8 +59,8 @@
   </Target>
   <Target Name="BeforeBuild" DependsOnTargets="UpdateWix">
     <ItemGroup>
-      <BinFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.exe" Exclude="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.vshost.exe" />
-      <BinFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.dll" />
+      <BinFile Include="$(MSBuildProjectDirectory)\bin\qif2json\**\*.exe"/>
+      <BinFile Include="$(MSBuildProjectDirectory)\bin\qif2json\**\*.dll" />
     </ItemGroup>
     <PropertyGroup Condition="$(KeyFile) != '' AND $(CertPassword) != '' AND $(SignTool) != ''">
       <SignCommand>"$(SignTool)" sign /f "$(KeyFile)" /p $(CertPassword) /t http://timestamp.globalsign.com/scripts/timstamp.dll /v /d "qif2json" /du https://github.com/aegoroff/qif2json %251</SignCommand>
