@@ -22,9 +22,6 @@ namespace qif2json.parser.Model
             this.transaction = transaction;
         }
 
-        public Transaction Transaction
-        {
-            get { return this.transaction; }
-        }
+        public Transaction Transaction => this.transaction;
     }
 }

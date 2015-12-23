@@ -89,10 +89,10 @@ $100.00
 ^", 2, 16, true)]
         public void Tests(string qif, long transactions, long lines, bool addId)
         {
-            var parser = new QifParser(output.WriteLine) { Idented = true, AddId = addId};
+            var parser = new QifParser(this.output.WriteLine) { Idented = true, AddId = addId};
             var json = parser.CompileString(qif);
             Assert.Equal(0, parser.NumberOfSyntaxErrors);
-            output.WriteLine(json);
+            this.output.WriteLine(json);
             Assert.NotEmpty(json);
             Assert.Equal(transactions, parser.FileStatistic.TotalTransactions);
             Assert.Equal(lines, parser.FileStatistic.TotalLines);

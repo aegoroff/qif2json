@@ -22,9 +22,6 @@ namespace qif2json.parser.Model
             this.element = element;
         }
 
-        public string Element
-        {
-            get { return this.element; }
-        }
+        public string Element => this.element;
     }
 }

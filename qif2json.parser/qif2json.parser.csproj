@@ -56,7 +56,6 @@
     <Compile Include="FileCharsetDetector.cs" />
     <Compile Include="Debug\ErrorListener.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="FileSize.cs" />
     <Compile Include="Model\AccountType.cs" />
     <Compile Include="Model\Statistic.cs" />
     <Compile Include="Model\Transaction.cs" />
@@ -66,7 +65,6 @@
     <Compile Include="Qif2JsonListener.cs" />
     <Compile Include="Model\TransactionDetectedEventArgs.cs" />
     <Compile Include="Debug\TreeListener.cs" />
-    <Compile Include="SizeUnit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
