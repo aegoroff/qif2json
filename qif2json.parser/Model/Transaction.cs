@@ -23,10 +23,7 @@ namespace qif2json.parser.Model
             return new Transaction(new List<IDictionary<string, string>>());
         }
 
-        public IEnumerable<IDictionary<string, string>> Lines
-        {
-            get { return this.lines; }
-        }
+        public IEnumerable<IDictionary<string, string>> Lines => this.lines;
 
         internal void Add(IDictionary<string, string> line)
         {
@@ -39,7 +36,7 @@ namespace qif2json.parser.Model
             var hash = Sha1HashStringForUtf8String(data, encoding);
             this.Add(new Dictionary<string, string>
             {
-                {"Id", hash}
+                {"Id", hash} // Not L10N
             });
         }
 
@@ -55,7 +52,7 @@ namespace qif2json.parser.Model
         private static string HexStringFromBytes(IEnumerable<byte> bytes)
         {
             var sb = new StringBuilder();
-            foreach (var hex in bytes.Select(b => b.ToString("x2")))
+            foreach (var hex in bytes.Select(b => b.ToString(@"x2")))
             {
                 sb.Append(hex);
             }

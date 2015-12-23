@@ -20,10 +20,7 @@ namespace qif2json.parser
             this.keyResolver = keyResolver;
         }
 
-        public Statistic FileStatistic
-        {
-            get { return this.fileStatistic; }
-        }
+        public Statistic FileStatistic => this.fileStatistic;
 
         /// <summary>
         ///     Occurs on transaction detection
@@ -74,7 +71,7 @@ namespace qif2json.parser
 
         public override void ExitCode(Qif2json.CodeContext context)
         {
-            this.lineKey = keyResolver(context.LINE_START().GetText());
+            this.lineKey = this.keyResolver(context.LINE_START().GetText());
         }
 
         public override void ExitLiteral_string(Qif2json.Literal_stringContext context)

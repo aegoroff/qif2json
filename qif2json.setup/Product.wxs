@@ -1,117 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-    <?define SourcePath = "$(var.SolutionDir)qif2json\bin\$(var.CONFIGURATION)" ?>
-	<?define Version = "1.0.0.0" ?>
-	<Product 
-        Id="*" 
-        Name="QIF to JSON converter tool" 
-        Language="1033" 
-        Version="$(var.Version)" 
-        Manufacturer="Alexander Egorov" 
-        UpgradeCode="D2B34239-7C20-4D52-8998-A855E5A45E1B"
-    >
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+  <?include "Variables.wxi" ?>
+  <Product
+    Id="*"
+    Name="QIF to JSON converter tool"
+    Language="1033"
+    Version="$(var.Version)"
+    Manufacturer="Alexander Egorov"
+    UpgradeCode="D2B34239-7C20-4D52-8998-A855E5A45E1B">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-        
-        <!--
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <!--
 			Check for .NET 4.5
 		-->
-		<PropertyRef Id="NETFRAMEWORK45"/>
-		<Condition Message="This setup requires the .NET Framework 4.5 or higher.">
-            Installed OR NETFRAMEWORK45
-        </Condition>
-        
-		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+    <PropertyRef Id="NETFRAMEWORK45" />
+    <Condition Message="This setup requires the .NET Framework 4.5 or higher.">
+      Installed OR NETFRAMEWORK45
+    </Condition>
 
-        <Feature Id="ProductFeature" Title="Qif2Json.install" Level="1">
-			<ComponentRef Id="qif2json.bin" />
-			<ComponentRef Id="qif2json.shortcut" />
-		</Feature>
-    
-        <UIRef Id="WixUI_Minimal"/>
-	</Product>
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
-	<Fragment>
-        
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-                <Directory Id="INSTALLFOLDER" Name="qif2json">
-                    <Component Id="qif2json.bin" Guid="{CB7879B3-61A2-43DF-8643-1EE475DC209E}">
-							<File
-								Id="LICENSE.txt"
-								Name="LICENSE.txt"
-								Source="..\LICENSE.txt"
-								DiskId="1"/>
-                            <File
-								Id="qif2json.exe"
-								Name="qif2json.exe"
-								Source="$(var.SourcePath)\qif2json.exe"
-								DiskId="1"/>
-							<File
-								Id="qif2json.exe.config"
-								Name="qif2json.exe.config"
-								Source="$(var.SourcePath)\qif2json.exe.config"
-								DiskId="1"/>
-                            <File
-								Id="qif2json.parser.dll"
-								Name="qif2json.parser.dll"
-								Source="$(var.SourcePath)\qif2json.parser.dll"
-								DiskId="1"/>
-                            <File
-								Id="BurnSystems.CommandLine.dll"
-								Name="BurnSystems.CommandLine.dll"
-								Source="$(var.SourcePath)\BurnSystems.CommandLine.dll"
-								DiskId="1"/>
-                            <File
-								Id="Newtonsoft.Json.dll"
-								Name="Newtonsoft.Json.dll"
-								Source="$(var.SourcePath)\Newtonsoft.Json.dll"
-								DiskId="1"/>
-                            <File
-								Id="Ude.dll"
-								Name="Ude.dll"
-								Source="$(var.SourcePath)\Ude.dll"
-								DiskId="1"/>
-                            <File
-								Id="Antlr4.Runtime.net45.dll"
-								Name="Antlr4.Runtime.net45.dll"
-								Source="$(var.SourcePath)\Antlr4.Runtime.net45.dll"
-								DiskId="1"/>
-						</Component>
-                </Directory>
-            </Directory>
-            <!-- Qif2Json Start menu folder -->
-			<Directory Id="ProgramMenuFolder" Name="Programs">
-				<Directory Id="Qif2JsonProgramMenuFolder" Name="Qif2Json">
-					<Component Id="qif2json.shortcut" Guid="{57982AD1-B12F-4B87-BE0C-4794E76AF111}">
-						<!-- 
-							Fix ICE 38 by adding a dummy registry key that is the key for this shortcut.
-							http://msdn.microsoft.com/library/en-us/msi/setup/ice38.asp
-						-->
-						<RegistryValue Root="HKCU" Key="Software\Qif2Json" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+    <Feature Id="ProductFeature" Title="Qif2Json.install" Level="1">
+      <ComponentGroupRef Id="qif2json" />
+      <ComponentRef Id="qif2json.shortcut" />
+    </Feature>
 
-                        <Shortcut Id="Qif2JsonStartMenuShortcut"
-                                Name="QIF to JSON"
-                                Description="QIF to JSON conversion tool"
-                                Target="[%ComSpec]"
-                                Arguments='/k "[!qif2json.exe]"'
-                                WorkingDirectory="INSTALLFOLDER" Show="normal"/>
-                        
-						<Shortcut 
-                            Name="License" 
-                            Target="[!LICENSE.txt]" 
-                            Id="Qif2JsonLicenseStartMenuShortcut"
-                            WorkingDirectory="INSTALLFOLDER" 
-                            Directory="Qif2JsonProgramMenuFolder" />
-						<!--
-							Fix ICE64 by adding a remove folder element 
-							http://windowssdk.msdn.microsoft.com/en-us/library/ms704358.aspx
-						-->
-						<RemoveFolder Id="RemoveQif2JsonProgramMenuFolder" On="uninstall" />
-					</Component>
-				</Directory>
-			</Directory>
-		</Directory>
-	</Fragment>
+    <UIRef Id="WixUI_Minimal" />
+  </Product> 
 </Wix>

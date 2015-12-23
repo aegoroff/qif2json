@@ -94,22 +94,22 @@ namespace qif2json.parser
                             if (batchStarted)
                             {
                                 // write comma only after first batch
-                                outputWriter.Write("]},");
+                                outputWriter.Write("]},"); // Not L10N
                                 transactionStarted = false;
                             }
                             else
                             {
-                                outputWriter.Write("[");
+                                outputWriter.Write("["); // Not L10N
                             }
                             batchStarted = true;
-                            outputWriter.Write(CreateHead(args.Element));
+                            outputWriter.Write(this.CreateHead(args.Element));
                         },
                         (o, args) =>
                         {
                             if (transactionStarted)
                             {
                                 // write comma only after first transaction
-                                outputWriter.Write(",");
+                                outputWriter.Write(","); // Not L10N
                             }
                             transactionStarted = true;
                             if (this.AddId)
@@ -120,7 +120,7 @@ namespace qif2json.parser
                         });
                 }
             }
-            outputWriter.Write("]}]");
+            outputWriter.Write("]}]"); // Not L10N
             outputWriter.Flush();
             outStream.Flush();
         }
@@ -159,20 +159,21 @@ namespace qif2json.parser
 
 #if DEBUG
             parser.Trace = true;
-            output.Do(instance =>
+            this.output.Do(instance =>
             {
-                var treeL = new TreeListener(output, parser);
+                var treeL = new TreeListener(this.output, parser);
                 parser.AddParseListener(treeL);
+                parser.AddErrorListener(new DiagnosticErrorListener());
                 parser.AddErrorListener(new ErrorListener(instance, treeL));
             });
 #endif
-            NumberOfSyntaxErrors = parser.NumberOfSyntaxErrors;
-            if (NumberOfSyntaxErrors > 0)
+            this.NumberOfSyntaxErrors = parser.NumberOfSyntaxErrors;
+            if (this.NumberOfSyntaxErrors > 0)
             {
                 return;
             }
 
-            var listener = new Qif2JsonListener(KeyResolver);
+            var listener = new Qif2JsonListener(this.KeyResolver);
             listener.TransactionDetected += (sender, e) => onTransactionDetect(sender, e);
             listener.TypeDetected += (sender, e) => onTypeDetect(sender, e);
             parser.AddParseListener(listener);
@@ -182,28 +183,28 @@ namespace qif2json.parser
 
         private string KeyResolver(string code)
         {
-            if (!this.allowedCodes[currentType].ContainsKey(code))
+            if (!this.allowedCodes[this.currentType].ContainsKey(code))
             {
-                throw new NotSupportedException(string.Format("Code {0} not supported for {1} account type", code, currentType));
+                throw new NotSupportedException($"Code {code} not supported for {this.currentType} account type");
             }
-            return this.allowedCodes[currentType][code];
+            return this.allowedCodes[this.currentType][code];
         }
 
         private static Dictionary<string, string> NonInvestmentCodes()
         {
             return new[]
             {
-                new { c = "D", v = "Date" },
-                new { c = "T", v = "Amount" },
-                new { c = "C", v = "ClearedStatus" },
-                new { c = "N", v = "Num" },
-                new { c = "P", v = "Payee" },
-                new { c = "M", v = "Memo" },
-                new { c = "A", v = "Address" },
-                new { c = "L", v = "Category" },
-                new { c = "S", v = "CategoryInSplit" },
-                new { c = "E", v = "MemoInSplit" },
-                new { c = "$", v = "DollarAmountOfSplit" }
+                new { c = "D", v = "Date" }, // Not L10N
+                new { c = "T", v = "Amount" }, // Not L10N
+                new { c = "C", v = "ClearedStatus" }, // Not L10N
+                new { c = "N", v = "Num" }, // Not L10N
+                new { c = "P", v = "Payee" }, // Not L10N
+                new { c = "M", v = "Memo" }, // Not L10N
+                new { c = "A", v = "Address" }, // Not L10N
+                new { c = "L", v = "Category" }, // Not L10N
+                new { c = "S", v = "CategoryInSplit" }, // Not L10N
+                new { c = "E", v = "MemoInSplit" }, // Not L10N
+                new { c = "$", v = "DollarAmountOfSplit" } // Not L10N
             }.ToDictionary(code => code.c, code => code.v);
         }
         
@@ -211,18 +212,18 @@ namespace qif2json.parser
         {
             return new[]
             {
-                new { c = "D", v = "Date" },
-                new { c = "N", v = "Action" },
-                new { c = "Y", v = "Security" },
-                new { c = "I", v = "Price" },
-                new { c = "Q", v = "Quantity" },
-                new { c = "T", v = "TransactionAmount" },
-                new { c = "C", v = "ClearedStatus" },
-                new { c = "P", v = "FirstLineText" },
-                new { c = "M", v = "Memo" },
-                new { c = "O", v = "Commission" },
-                new { c = "L", v = "Account" },
-                new { c = "$", v = "Amount" }
+                new { c = "D", v = "Date" }, // Not L10N
+                new { c = "N", v = "Action" }, // Not L10N
+                new { c = "Y", v = "Security" }, // Not L10N
+                new { c = "I", v = "Price" }, // Not L10N
+                new { c = "Q", v = "Quantity" }, // Not L10N
+                new { c = "T", v = "TransactionAmount" }, // Not L10N
+                new { c = "C", v = "ClearedStatus" }, // Not L10N
+                new { c = "P", v = "FirstLineText" }, // Not L10N
+                new { c = "M", v = "Memo" }, // Not L10N
+                new { c = "O", v = "Commission" }, // Not L10N
+                new { c = "L", v = "Account" }, // Not L10N
+                new { c = "$", v = "Amount" } // Not L10N
             }.ToDictionary(code => code.c, code => code.v);
         }
         
@@ -230,8 +231,8 @@ namespace qif2json.parser
         {
             return new[]
             {
-                new { c = "D", v = "Description" },
-                new { c = "N", v = "Name" }
+                new { c = "D", v = "Description" }, // Not L10N
+                new { c = "N", v = "Name" } // Not L10N
             }.ToDictionary(code => code.c, code => code.v);
         }
         
@@ -239,12 +240,12 @@ namespace qif2json.parser
         {
             return new[]
             {
-                new { c = "D", v = "Description" },
-                new { c = "N", v = "Name" },
-                new { c = "T", v = "Type" },
-                new { c = "L", v = "CreditLimit" },
-                new { c = "/", v = "BalanceDate" },
-                new { c = "$", v = "BalanceAmount" }
+                new { c = "D", v = "Description" }, // Not L10N
+                new { c = "N", v = "Name" }, // Not L10N
+                new { c = "T", v = "Type" }, // Not L10N
+                new { c = "L", v = "CreditLimit" }, // Not L10N
+                new { c = "/", v = "BalanceDate" }, // Not L10N
+                new { c = "$", v = "BalanceAmount" } // Not L10N
             }.ToDictionary(code => code.c, code => code.v);
         }
         
@@ -252,13 +253,13 @@ namespace qif2json.parser
         {
             return new[]
             {
-                new { c = "D", v = "Description" },
-                new { c = "N", v = "CategoryName" },
-                new { c = "T", v = "TaxRelatedOrOmitted" },
-                new { c = "I", v = "IncomeCategory" },
-                new { c = "E", v = "ExpenseCategory" },
-                new { c = "B", v = "BudgetAmount" },
-                new { c = "R", v = "TaxSchedule" },
+                new { c = "D", v = "Description" }, // Not L10N
+                new { c = "N", v = "CategoryName" }, // Not L10N
+                new { c = "T", v = "TaxRelatedOrOmitted" }, // Not L10N
+                new { c = "I", v = "IncomeCategory" }, // Not L10N
+                new { c = "E", v = "ExpenseCategory" }, // Not L10N
+                new { c = "B", v = "BudgetAmount" }, // Not L10N
+                new { c = "R", v = "TaxSchedule" }, // Not L10N
             }.ToDictionary(code => code.c, code => code.v);
         }
 
@@ -266,27 +267,27 @@ namespace qif2json.parser
         {
             return new[]
             {
-                new { c = "T", v = "Amount" },
-                new { c = "C", v = "ClearedStatus" },
-                new { c = "P", v = "Payee" },
-                new { c = "M", v = "Memo" },
-                new { c = "A", v = "Address" },
-                new { c = "L", v = "CategoryOrClass" },
-                new { c = "S", v = "CategoryOrClassInSplit" },
-                new { c = "E", v = "MemoInSplit" },
-                new { c = "$", v = "DollarAmountOfSplit" },
-                new { c = "KC", v = "CheckTransaction" },
-                new { c = "KD", v = "DepositTransaction" },
-                new { c = "KP", v = "PaymentTransaction" },
-                new { c = "KI", v = "InvestmentTransaction" },
-                new { c = "KE", v = "ElectronicPayeeTransaction" },
-                new { c = "1", v = "FirstPaymentDate" },
-                new { c = "2", v = "TotalYearsForLoan" },
-                new { c = "3", v = "NumberPaymentsDone" },
-                new { c = "4", v = "NumberPeriodsPerYear" },
-                new { c = "5", v = "InterestRate" },
-                new { c = "6", v = "CurrentLoanBalance" },
-                new { c = "7", v = "OriginalLoanAmount" }
+                new { c = "T", v = "Amount" }, // Not L10N
+                new { c = "C", v = "ClearedStatus" }, // Not L10N
+                new { c = "P", v = "Payee" }, // Not L10N
+                new { c = "M", v = "Memo" }, // Not L10N
+                new { c = "A", v = "Address" }, // Not L10N
+                new { c = "L", v = "CategoryOrClass" }, // Not L10N
+                new { c = "S", v = "CategoryOrClassInSplit" }, // Not L10N
+                new { c = "E", v = "MemoInSplit" }, // Not L10N
+                new { c = "$", v = "DollarAmountOfSplit" }, // Not L10N
+                new { c = "KC", v = "CheckTransaction" }, // Not L10N
+                new { c = "KD", v = "DepositTransaction" }, // Not L10N
+                new { c = "KP", v = "PaymentTransaction" }, // Not L10N
+                new { c = "KI", v = "InvestmentTransaction" }, // Not L10N
+                new { c = "KE", v = "ElectronicPayeeTransaction" }, // Not L10N
+                new { c = "1", v = "FirstPaymentDate" }, // Not L10N
+                new { c = "2", v = "TotalYearsForLoan" }, // Not L10N
+                new { c = "3", v = "NumberPaymentsDone" }, // Not L10N
+                new { c = "4", v = "NumberPeriodsPerYear" }, // Not L10N
+                new { c = "5", v = "InterestRate" }, // Not L10N
+                new { c = "6", v = "CurrentLoanBalance" }, // Not L10N
+                new { c = "7", v = "OriginalLoanAmount" } // Not L10N
             }.ToDictionary(code => code.c, code => code.v);
         }
 
@@ -397,15 +398,15 @@ $	Dollar amount of split
         {
             switch (type)
             {
-                case "Invst":
+                case "Invst": // Not L10N
                     return AccountType.Investment;
-                case "Account":
+                case "Account": // Not L10N
                     return AccountType.AccountInformation;
-                case "Cat":
+                case "Cat": // Not L10N
                     return AccountType.CategoryList;
-                case "Class":
+                case "Class": // Not L10N
                     return AccountType.ClassList;
-                case "Memorized":
+                case "Memorized": // Not L10N
                     return AccountType.MemorizedTransactionList;
                 default:
                     return AccountType.NonInvestment;
@@ -415,7 +416,7 @@ $	Dollar amount of split
         private string CreateHead(string type)
         {
             this.currentType = ToAccountType(type);
-            return "{" + string.Format("\"Type\": \"{0}\", \"Transactions\": [", type);
+            return @"{" + $"\"Type\": \"{type}\", \"Transactions\": [";
         }
     }
 }

@@ -2,7 +2,7 @@
 <Project DefaultTargets="WixVersionUpdater" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="WixVersionUpdater">
 	<ItemGroup>
-		<WixFile Include="$(MSBuildProjectDirectory)\qif2json.setup\Product.wxs" />
+		<WixFile Include="$(MSBuildProjectDirectory)\qif2json.setup\Variables.wxi" />
 		<WixFile Include="$(MSBuildProjectDirectory)\qif2json.setup.bootstrap\Bundle.wxs" />
 	</ItemGroup>
 	<ItemGroup>

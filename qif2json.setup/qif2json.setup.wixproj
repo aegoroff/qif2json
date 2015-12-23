@@ -19,9 +19,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-	<DefineConstants>CONFIGURATION=Release</DefineConstants>
+    <DefineConstants>CONFIGURATION=Release</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DirectoriesDefinition.wxs" />
+    <Compile Include="files.wxs" />
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
@@ -38,24 +40,51 @@
       <Name>WixNetFxExtension</Name>
     </WixExtension>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Variables.wxi" />
+  </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
-  <Target Name="BeforeBuild">
+  <Import Project="..\WiX.msbuild" />
+  <Target Name="CreateFiles">
     <ItemGroup>
-      <BinFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.exe" Exclude="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.vshost.exe"/>
+      <PackageFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.exe" Exclude="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.vshost.exe" />
+      <PackageFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.dll" />
+      <PackageFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.pdb" />
+      <PackageFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.config" Exclude="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.vshost.exe.config" />
+	  <PackageFile Include="$(MSBuildProjectDirectory)\..\LICENSE.txt" />
+    </ItemGroup>
+    <MakeDir Directories="bin\qif2json" Condition="!Exists('bin\qif2json')" />
+    <Copy SourceFiles="@(PackageFile)" DestinationFiles="@(PackageFile->'bin\qif2json\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <HeatDirectory ToolPath="$(WixInstallPath)" VerboseOutput="true" GenerateGuidsNow="true" OutputFile="$(ProjectDir)files.wxs" SuppressFragments="true" Directory="bin\qif2json" ComponentGroupName="qif2json" DirectoryRefId="INSTALLFOLDER" KeepEmptyDirectories="false" SuppressRootDirectory="true" PreprocessorVariable="var.SourcePath" SuppressRegistry="true" />
+  </Target>
+  <Target Name="BeforeBuild" DependsOnTargets="UpdateWix">
+    <ItemGroup>
+      <BinFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.exe" Exclude="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.vshost.exe" />
       <BinFile Include="$(MSBuildProjectDirectory)\..\qif2json\bin\$(Configuration)\**\*.dll" />
     </ItemGroup>
-	<PropertyGroup Condition="$(KeyFile) != '' AND $(CertPassword) != '' AND $(SignTool) != ''" >
-	  <SignCommand>"$(SignTool)" sign /f "$(KeyFile)" /p $(CertPassword) /t http://timestamp.globalsign.com/scripts/timstamp.dll /v /d "qif2json" /du https://github.com/aegoroff/qif2json %251</SignCommand>
-	</PropertyGroup> 
-	<PropertyGroup Condition="$(SignCommand) != ''" >
-		<TmpFile>tmp.bat</TmpFile>
-	</PropertyGroup>
-    <WriteLinesToFile Condition="$(SignCommand) != ''" File="$(TmpFile)" Lines="$(SignCommand)"/>
-	<Exec 
-		Condition="$(SignCommand) != ''" 
-		Command="$(TmpFile) &quot;%(BinFile.Identity)&quot; > NUL 2>&amp;1" WorkingDirectory="$(MsBuildThisFileDirectory)"
-	/>
-	<Delete Files="$(TmpFile)" Condition="$(SignCommand) != ''" />
+    <PropertyGroup Condition="$(KeyFile) != '' AND $(CertPassword) != '' AND $(SignTool) != ''">
+      <SignCommand>"$(SignTool)" sign /f "$(KeyFile)" /p $(CertPassword) /t http://timestamp.globalsign.com/scripts/timstamp.dll /v /d "qif2json" /du https://github.com/aegoroff/qif2json %251</SignCommand>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(SignCommand) != ''">
+      <TmpFile>tmp.bat</TmpFile>
+    </PropertyGroup>
+    <WriteLinesToFile Condition="$(SignCommand) != ''" File="$(TmpFile)" Lines="$(SignCommand)" />
+    <Exec Condition="$(SignCommand) != ''" Command="$(TmpFile) &quot;%(BinFile.Identity)&quot; &gt; NUL 2&gt;&amp;1" WorkingDirectory="$(MsBuildThisFileDirectory)" />
+    <Delete Files="$(TmpFile)" Condition="$(SignCommand) != ''" />
+  </Target>
+  <Target Name="UpdateWix" DependsOnTargets="CreateFiles">
+    <ItemGroup>
+      <RegexTransform Include="$(ProjectDir)files.wxs">
+        <Find><![CDATA[File\s+Id="\w+"\s+KeyPath="yes"\s+Source="(.+)(qif2json\.exe|LICENSE\.txt)"]]></Find>
+        <ReplaceWith><![CDATA[File Id="$2" KeyPath="yes" Source="$1$2"]]></ReplaceWith>
+      </RegexTransform>
+      <RegexTransform Include="$(ProjectDir)files.wxs">
+        <Find><![CDATA[<Wix(.+?)>(\s*)<Fragment>]]></Find>
+        <ReplaceWith><![CDATA[<Wix$1>$2<%3Finclude "Variables.wxi" %3F>$2<Fragment>]]></ReplaceWith>
+        <Options>Singleline</Options>
+      </RegexTransform>
+    </ItemGroup>
+    <RegexTransform Items="@(RegexTransform)" />
   </Target>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
