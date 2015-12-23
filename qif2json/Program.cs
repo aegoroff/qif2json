@@ -32,13 +32,20 @@ namespace qif2json
             sw.Start();
             try
             {
-                var fi = new FileInfo(arguments.Input);
-                var bs = ByteSize.FromBytes(fi.Length);
+                var originalInfo = new FileInfo(arguments.Input);
+                var jsonInfo = new FileInfo(Path.GetFullPath(output));
+
+                var original = ByteSize.FromBytes(originalInfo.Length);
+                var json = ByteSize.FromBytes(jsonInfo.Length);
                 parser.CompileFile(arguments.Input, output, arguments.Encoding);
 
                 sw.Stop();
                 Console.WriteLine(string.Empty);
-                Console.WriteLine("{0}", bs.Humanize("#.##")); // Not L10N
+                Console.WriteLine("{0} original size", original.Humanize("#.##")); // Not L10N
+                Console.WriteLine("{0} result size", json.Humanize("#.##")); // Not L10N
+
+                Console.WriteLine(string.Empty);
+
                 Console.WriteLine("{0}", "account".ToQuantity((int)parser.FileStatistic.TotalAccounts)); // Not L10N
                 Console.WriteLine("{0}", "transaction".ToQuantity((int)parser.FileStatistic.TotalTransactions)); // Not L10N
                 Console.WriteLine("{0}", "line".ToQuantity((int)parser.FileStatistic.TotalLines)); // Not L10N
