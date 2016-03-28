@@ -41,17 +41,17 @@ namespace qif2json
 
                 sw.Stop();
                 Console.WriteLine(string.Empty);
-                Console.WriteLine("{0} original size", original.Humanize("#.##")); // Not L10N
-                Console.WriteLine("{0} result size", json.Humanize("#.##")); // Not L10N
+              Console.WriteLine($"{original.Humanize("#.##")} original size"); // Not L10N
+              Console.WriteLine($"{json.Humanize("#.##")} result size"); // Not L10N
 
                 Console.WriteLine(string.Empty);
 
-                Console.WriteLine("{0}", "account".ToQuantity((int)parser.FileStatistic.TotalAccounts)); // Not L10N
-                Console.WriteLine("{0}", "transaction".ToQuantity((int)parser.FileStatistic.TotalTransactions)); // Not L10N
-                Console.WriteLine("{0}", "line".ToQuantity((int)parser.FileStatistic.TotalLines)); // Not L10N
+              Console.WriteLine($"{"account".ToQuantity((int) parser.FileStatistic.TotalAccounts)}"); // Not L10N
+              Console.WriteLine($"{"transaction".ToQuantity((int) parser.FileStatistic.TotalTransactions)}"); // Not L10N
+              Console.WriteLine($"{"line".ToQuantity((int) parser.FileStatistic.TotalLines)}"); // Not L10N
                 Console.WriteLine(string.Empty);
-                Console.WriteLine("The result written to: {0}", Path.GetFullPath(output)); // Not L10N
-                Console.WriteLine("{0} elapsed", sw.Elapsed.Humanize()); // Not L10N
+              Console.WriteLine($"The result written to: {Path.GetFullPath(output)}"); // Not L10N
+              Console.WriteLine($"{sw.Elapsed.Humanize()} elapsed"); // Not L10N
             }
             catch (Exception e)
             {
